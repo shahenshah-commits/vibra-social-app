@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VIBRA • Connect • Create • Discover</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Feather Icons for clean vector icon design -->
+  <script src="https://unpkg.com/feather-icons"></script>
+  <!-- Supabase JS Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="theme-dark">
+
+  <!-- AUTHENTICATION SCREEN -->
+  <div id="auth-screen" class="auth-container">
+    <div class="auth-card glass-panel">
+      <!-- VIBRA LOGO -->
+      <div class="vibra-brand-header">
+        <div class="vibra-logo-icon">
+          <svg viewBox="0 0 100 100" class="logo-svg">
+            <defs>
+              <linearGradient id="vibraGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#00f2fe" />
+                <stop offset="100%" stop-color="#4facfe" />
+              </linearGradient>
+              <linearGradient id="vibraGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#7f00ff" />
+                <stop offset="100%" stop-color="#e100ff" />
+              </linearGradient>
+            </defs>
+            <path d="M 15 20 L 50 85 L 85 20 L 68 20 L 50 58 L 32 20 Z" fill="url(#vibraGrad)"/>
+            <path d="M 35 20 L 50 50 L 65 20 L 78 20 L 50 72 L 22 20 Z" fill="url(#vibraGrad2)" opacity="0.85"/>
+          </svg>
+        </div>
+        <h1 class="brand-name">VIBRA</h1>
+        <p class="brand-tagline">Connect • Create • Discover</p>
+      </div>
+
+      <!-- LOGIN FORM -->
+      <form id="login-form" class="auth-form active">
+        <div class="form-group">
+          <label for="login-identifier">Email or Phone</label>
+          <input type="text" id="login-identifier" class="glass-input" placeholder="user@vibra.app or +123456789" required>
+        </div>
+        <div class="form-group">
+          <label for="login-password">Password</label>
+          <input type="password" id="login-password" class="glass-input" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn btn-primary full-width">Sign In</button>
+        <div class="auth-links">
+          <a href="#" id="link-to-forgot">Forgot Password?</a>
+          <p>Don't have an account? <a href="#" id="link-to-register">Register</a></p>
+        </div>
+      </form>
+
+      <!-- REGISTER FORM -->
+      <form id="register-form" class="auth-form hidden">
+        <div class="form-group">
+          <label for="reg-fullname">Full Name</label>
+          <input type="text" id="reg-fullname" class="glass-input" placeholder="Alex Morgan" required>
+        </div>
+        <div class="form-group">
+          <label for="reg-username">Username</label>
+          <input type="text" id="reg-username" class="glass-input" placeholder="alex_morgan" required>
+          <span id="username-status" class="input-status-msg"></span>
+        </div>
+        <div class="form-group">
+          <label for="reg-email">Email</label>
+          <input type="email" id="reg-email" class="glass-input" placeholder="alex@vibra.app" required>
+        </div>
+        <div class="form-group">
+          <label for="reg-password">Password</label>
+          <input type="password" id="reg-password" class="glass-input" placeholder="••••••••" required>
+        </div>
+        <div class="form-group">
+          <label for="reg-confirm-password">Confirm Password</label>
+          <input type="password" id="reg-confirm-password" class="glass-input" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn btn-primary full-width">Create Account</button>
+        <div class="auth-links">
+          <p>Already registered? <a href="#" id="link-to-login">Sign In</a></p>
+        </div>
+      </form>
+
+      <!-- FORGOT PASSWORD FORM -->
+      <form id="forgot-form" class="auth-form hidden">
+        <p class="auth-subtitle">Enter your email to receive recovery instructions.</p>
+        <div class="form-group">
+          <label for="forgot-email">Email Address</label>
+          <input type="email" id="forgot-email" class="glass-input" placeholder="alex@vibra.app" required>
+        </div>
+        <button type="submit" class="btn btn-primary full-width">Send Reset Link</button>
+        <div class="auth-links">
+          <a href="#" id="back-to-login">Back to Sign In</a>
+        </div>
+      </form>
+
+      <!-- DEMO MODE TRIGGER -->
+      <div class="demo-mode-bar">
+        <span>No credentials?</span>
+        <button id="btn-demo-mode" class="btn btn-secondary btn-sm">Enter Interactive Demo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN APPLICATION LAYOUT -->
+  <div id="app-screen" class="app-layout hidden">
+    <!-- DESKTOP SIDEBAR NAVIGATION -->
+    <aside class="sidebar glass-panel">
+      <div class="sidebar-brand">
+        <div class="vibra-logo-icon small">
+          <svg viewBox="0 0 100 100" class="logo-svg">
+            <path d="M 15 20 L 50 85 L 85 20 L 68 20 L 50 58 L 32 20 Z" fill="url(#vibraGrad)"/>
+            <path d="M 35 20 L 50 50 L 65 20 L 78 20 L 50 72 L 22 20 Z" fill="url(#vibraGrad2)" opacity="0.85"/>
+          </svg>
+        </div>
+        <span class="brand-title">VIBRA</span>
+      </div>
+
+      <nav class="nav-menu">
+        <a href="#home" class="nav-item active" data-tab="home">
+          <i data-feather="home"></i> <span>Home</span>
+        </a>
+        <a href="#explore" class="nav-item" data-tab="explore">
+          <i data-feather="compass"></i> <span>Explore</span>
+        </a>
+        <a href="#create" class="nav-item" data-tab="create">
+          <i data-feather="plus-square"></i> <span>Create</span>
+        </a>
+        <a href="#notifications" class="nav-item" data-tab="notifications">
+          <i data-feather="bell"></i> <span>Notifications</span>
+          <span class="badge hidden" id="unread-notifications-badge">0</span>
+        </a>
+        <a href="#messages" class="nav-item" data-tab="messages">
+          <i data-feather="send"></i> <span>Messages</span>
+        </a>
+        <a href="#profile" class="nav-item" data-tab="profile">
+          <i data-feather="user"></i> <span>Profile</span>
+        </a>
+        <a href="#settings" class="nav-item" data-tab="settings">
+          <i data-feather="settings"></i> <span>Settings</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-user-footer" id="sidebar-user-card">
+        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" class="avatar-sm" id="sidebar-user-avatar" alt="Avatar">
+        <div class="user-info">
+          <span class="user-fullname" id="sidebar-user-fullname">User</span>
+          <span class="user-handle" id="sidebar-user-handle">@user</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- CENTRAL CONTENT VIEW CONTAINER -->
+    <main class="main-content">
+      <header class="mobile-top-bar glass-panel">
+        <div class="vibra-logo-icon small">
+          <svg viewBox="0 0 100 100" class="logo-svg">
+            <path d="M 15 20 L 50 85 L 85 20 L 68 20 L 50 58 L 32 20 Z" fill="url(#vibraGrad)"/>
+          </svg>
+        </div>
+        <span class="brand-title">VIBRA</span>
+        <div class="demo-pill hidden" id="demo-indicator">DEMO MODE</div>
+      </header>
+
+      <!-- TAB 1: HOME FEED -->
+      <section id="tab-home" class="tab-content active">
+        <!-- VIBRA STORIES BAR -->
+        <div class="stories-bar glass-panel">
+          <div class="story-item create-story" id="btn-create-story">
+            <div class="story-avatar-wrap">
+              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" alt="My Profile">
+              <div class="add-story-icon">+</div>
+            </div>
+            <span>Your Story</span>
+          </div>
+          <div id="stories-list" class="stories-flex flex-1"></div>
+        </div>
+
+        <!-- POST FEED -->
+        <div id="feed-container" class="feed-container"></div>
+      </section>
+
+      <!-- TAB 2: EXPLORE -->
+      <section id="tab-explore" class="tab-content hidden">
+        <div class="search-bar-wrapper glass-panel">
+          <i data-feather="search"></i>
+          <input type="text" id="explore-search-input" placeholder="Search creators, hashtags, posts..." class="glass-input">
+        </div>
+        
+        <div class="explore-tags">
+          <button class="tag-pill active">#Trending</button>
+          <button class="tag-pill">#DigitalArt</button>
+          <button class="tag-pill">#Technology</button>
+          <button class="tag-pill">#Architecture</button>
+          <button class="tag-pill">#Photography</button>
+        </div>
+
+        <div class="explore-grid" id="explore-grid"></div>
+      </section>
+
+      <!-- TAB 3: CREATE POST -->
+      <section id="tab-create" class="tab-content hidden">
+        <div class="create-post-card glass-panel">
+          <h2>Create New Vibra</h2>
+          <form id="create-post-form">
+            <div class="media-upload-area" id="media-drop-zone">
+              <input type="file" id="post-media-input" accept="image/*,video/*" hidden>
+              <div class="upload-placeholder" id="upload-placeholder">
+                <i data-feather="upload-cloud"></i>
+                <p>Drag and drop image/video here, or <span>browse</span></p>
+                <small>PNG, JPG, MP4 up to 25MB</small>
+              </div>
+              <div id="media-preview-container" class="media-preview hidden"></div>
+            </div>
+
+            <div class="form-group margin-top">
+              <textarea id="post-caption" class="glass-input" rows="4" placeholder="What's vibing today? Use #hashtags and @mentions..."></textarea>
+            </div>
+
+            <div class="post-actions-bar">
+              <button type="button" class="btn btn-secondary" id="btn-cancel-post">Cancel</button>
+              <button type="submit" class="btn btn-primary" id="btn-submit-post">Publish</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- TAB 4: NOTIFICATIONS -->
+      <section id="tab-notifications" class="tab-content hidden">
+        <div class="notifications-header glass-panel">
+          <h3>Notifications</h3>
+          <button class="btn btn-sm btn-secondary" id="btn-mark-all-read">Mark all as read</button>
+        </div>
+        <div class="notifications-list" id="notifications-list"></div>
+      </section>
+
+      <!-- TAB 5: MESSAGES -->
+      <section id="tab-messages" class="tab-content hidden">
+        <div class="messaging-layout glass-panel">
+          <div class="conversations-list-pane">
+            <div class="conversations-header">
+              <h4>Direct Messages</h4>
+            </div>
+            <div id="conversations-list" class="conversations-items"></div>
+          </div>
+          <div class="chat-pane" id="active-chat-pane">
+            <div class="chat-header hidden" id="chat-header">
+              <img src="" id="chat-user-avatar" class="avatar-sm" alt="User Avatar">
+              <div>
+                <strong id="chat-user-name">User</strong>
+                <div class="status-online" id="chat-user-status">Online</div>
+              </div>
+            </div>
+            <div class="chat-messages" id="chat-messages-container">
+              <div class="empty-state">Select a chat to start vibing.</div>
+            </div>
+            <form id="chat-form" class="chat-input-bar hidden">
+              <input type="text" id="chat-message-input" class="glass-input" placeholder="Type a message..." required>
+              <button type="submit" class="btn btn-primary btn-icon"><i data-feather="send"></i></button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 6: PROFILE -->
+      <section id="tab-profile" class="tab-content hidden">
+        <div class="profile-header-card glass-panel">
+          <div class="profile-top-row">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" id="prof-avatar" class="profile-avatar" alt="Profile Picture">
+            <div class="profile-meta">
+              <div class="profile-name-actions">
+                <h2 id="prof-fullname">Alex Morgan</h2>
+                <button class="btn btn-secondary btn-sm" id="btn-edit-profile">Edit Profile</button>
+              </div>
+              <p class="profile-handle" id="prof-handle">@alex_morgan</p>
+              <div class="profile-stats">
+                <span><strong id="prof-posts-count">0</strong> posts</span>
+                <span><strong id="prof-followers-count">1.4k</strong> followers</span>
+                <span><strong id="prof-following-count">482</strong> following</span>
+              </div>
+              <p class="profile-bio" id="prof-bio">Digital creator, UI/UX enthusiast & tech explorer 🚀</p>
+              <a href="#" class="profile-website" id="prof-website" target="_blank">vibra.app/alex</a>
+            </div>
+          </div>
+
+          <div class="profile-tabs">
+            <button class="prof-tab active" data-target="my-posts">Posts</button>
+            <button class="prof-tab" data-target="saved-posts">Saved</button>
+          </div>
+        </div>
+
+        <div id="profile-grid-posts" class="explore-grid margin-top"></div>
+        <div id="profile-grid-saved" class="explore-grid margin-top hidden"></div>
+      </section>
+
+      <!-- TAB 7: SETTINGS -->
+      <section id="tab-settings" class="tab-content hidden">
+        <div class="settings-card glass-panel">
+          <h2>Settings & Preferences</h2>
+          <div class="settings-section">
+            <h4>Appearance</h4>
+            <div class="setting-row">
+              <span>Theme Mode</span>
+              <select id="setting-theme" class="glass-input inline">
+                <option value="dark">Dark Glassmorphism (Default)</option>
+                <option value="light">Light Glassmorphism</option>
+              </select>
+            </div>
+          </div>
+          <div class="settings-section">
+            <h4>Account Privacy</h4>
+            <div class="setting-row">
+              <span>Private Account</span>
+              <input type="checkbox" id="setting-privacy-toggle">
+            </div>
+          </div>
+          <div class="settings-section">
+            <h4>Supabase Configuration</h4>
+            <div class="form-group">
+              <label>Supabase Project URL</label>
+              <input type="text" id="cfg-supabase-url" class="glass-input" placeholder="https://xyz.supabase.co">
+            </div>
+            <div class="form-group">
+              <label>Supabase Anon Key</label>
+              <input type="password" id="cfg-supabase-key" class="glass-input" placeholder="eyJhbGciOi...">
+            </div>
+            <button class="btn btn-secondary" id="btn-save-supabase-cfg">Save Connection Config</button>
+          </div>
+          <div class="settings-section">
+            <button class="btn btn-danger full-width" id="btn-logout">Sign Out of VIBRA</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- MOBILE BOTTOM NAVIGATION -->
+    <nav class="mobile-nav glass-panel">
+      <a href="#home" class="mobile-nav-item active" data-tab="home"><i data-feather="home"></i></a>
+      <a href="#explore" class="mobile-nav-item" data-tab="explore"><i data-feather="compass"></i></a>
+      <a href="#create" class="mobile-nav-item" data-tab="create"><i data-feather="plus-square"></i></a>
+      <a href="#notifications" class="mobile-nav-item" data-tab="notifications"><i data-feather="bell"></i></a>
+      <a href="#messages" class="mobile-nav-item" data-tab="messages"><i data-feather="send"></i></a>
+      <a href="#profile" class="mobile-nav-item" data-tab="profile"><i data-feather="user"></i></a>
+    </nav>
+  </div>
+
+  <!-- COMMENTS MODAL DRAWER -->
+  <div id="comments-modal" class="modal-overlay hidden">
+    <div class="modal-card glass-panel">
+      <div class="modal-header">
+        <h4>Comments</h4>
+        <button class="btn-close" id="btn-close-comments">&times;</button>
+      </div>
+      <div class="comments-list" id="modal-comments-list"></div>
+      <form id="comment-form" class="comment-input-form">
+        <input type="text" id="comment-input" class="glass-input" placeholder="Add a comment..." required>
+        <button type="submit" class="btn btn-primary btn-sm">Post</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- EDIT PROFILE MODAL -->
+  <div id="edit-profile-modal" class="modal-overlay hidden">
+    <div class="modal-card glass-panel">
+      <div class="modal-header">
+        <h4>Edit Profile</h4>
+        <button class="btn-close" id="btn-close-edit-profile">&times;</button>
+      </div>
+      <form id="edit-profile-form">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="edit-fullname" class="glass-input" required>
+        </div>
+        <div class="form-group">
+          <label>Bio</label>
+          <textarea id="edit-bio" class="glass-input" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Website</label>
+          <input type="url" id="edit-website" class="glass-input">
+        </div>
+        <button type="submit" class="btn btn-primary full-width margin-top">Save Changes</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATIONS -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
