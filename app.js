@@ -1,3 +1,4 @@
+
 /**
  * VIBRA Social Application Engine
  * Supports Supabase Auth + Database with fully functional fallback Demo Mode.
