@@ -1,310 +1,370 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VIBRA — Connect • Create • Discover</title>
-    <link rel="manifest" href="manifest.json">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        vibra: { cyan: '#00f2fe', violet: '#4facfe', dark: '#0a0b10', card: '#13151f', border: '#23263a' }
-                    }
-                }
-            }
-        }
-    </script>
-    <script src="https://unpkg.com/feather-icons"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0a0b10; color: #f3f4f6; overflow-x: hidden; }
-        .glass-panel { background: rgba(19, 21, 31, 0.75); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7); }
-        .vibra-gradient { background: linear-gradient(135deg, #00f2fe 0%, #4facfe 50%, #9333ea 100%); }
-        .vibra-text-gradient { background: linear-gradient(135deg, #00f2fe 0%, #4facfe 50%, #c084fc 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .glow-effect { box-shadow: 0 0 40px -10px rgba(0, 242, 254, 0.25), 0 0 80px -20px rgba(147, 51, 234, 0.2); }
-        .blob { filter: blur(80px); animation: float 10s infinite alternate; }
-        @keyframes float {
-            0% { transform: translate(0px, 0px) scale(1); }
-            50% { transform: translate(30px, -40px) scale(1.1); }
-            100% { transform: translate(-20px, 20px) scale(0.9); }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VIBRA • Connect • Create • Discover</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/feather-icons"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body class="min-h-screen flex flex-col select-none relative bg-[#0a0b10]">
+<body class="theme-dark">
 
-    <!-- Animated Background Blobs -->
-    <div class="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-cyan-500/20 rounded-full blob pointer-events-none z-0"></div>
-    <div class="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-purple-600/20 rounded-full blob pointer-events-none z-0" style="animation-delay: -5s;"></div>
-
-    <div id="app" class="flex-1 flex flex-col z-10">
-        
-        <!-- LOGIN & AUTHENTICATION SCREEN -->
-        <div id="auth-screen" class="fixed inset-0 z-50 bg-[#0a0b10]/90 backdrop-blur-xl flex items-center justify-center p-4 overflow-y-auto">
-            <div class="glass-panel w-full max-w-md p-8 md:p-10 rounded-[2.5rem] relative glow-effect border border-white/10 my-auto">
-                
-                <!-- Branding Header -->
-                <div class="text-center mb-8">
-                    <div class="w-20 h-20 rounded-3xl vibra-gradient mx-auto flex items-center justify-center font-black text-4xl text-[#0a0b10] shadow-2xl shadow-cyan-500/30 mb-4 transform hover:scale-105 transition-transform duration-300">
-                        <i data-feather="zap" class="w-10 h-10 text-[#0a0b10]"></i>
-                    </div>
-                    <h1 class="text-3xl font-extrabold tracking-tight text-white mb-2">Welcome Back to VIBRA</h1>
-                    <p class="text-xs font-semibold text-cyan-400 tracking-widest uppercase">Connect • Create • Discover</p>
-                </div>
-                
-                <div id="auth-error" class="hidden mb-6 p-4 bg-red-500/10 border border-red-500/20 text-red-400 text-xs rounded-2xl text-center"></div>
-                
-                <!-- Forms Container -->
-                <div class="space-y-6">
-                    
-                    <!-- Login Form -->
-                    <form id="login-form" onsubmit="handleEmailLogin(event)" class="space-y-4">
-                        <div class="space-y-1.5">
-                            <label class="text-xs font-medium text-gray-300 ml-1">Email or Phone</label>
-                            <div class="relative">
-                                <span class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-500"><i data-feather="mail" class="w-4 h-4"></i></span>
-                                <input type="text" id="login-email" required placeholder="name@example.com" class="w-full bg-[#0a0b10]/80 border border-[#23263a] rounded-2xl pl-11 pr-4 py-3.5 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all">
-                            </div>
-                        </div>
-
-                        <div class="space-y-1.5">
-                            <div class="flex items-center justify-between ml-1">
-                                <label class="text-xs font-medium text-gray-300">Password</label>
-                                <button type="button" onclick="switchAuthView('forgot')" class="text-xs text-cyan-400 hover:underline">Forgot Password?</button>
-                            </div>
-                            <div class="relative">
-                                <span class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-500"><i data-feather="lock" class="w-4 h-4"></i></span>
-                                <input type="password" id="login-password" required placeholder="••••••••" class="w-full bg-[#0a0b10]/80 border border-[#23263a] rounded-2xl pl-11 pr-4 py-3.5 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all">
-                            </div>
-                        </div>
-
-                        <button type="submit" class="w-full vibra-gradient text-[#0a0b10] font-extrabold py-4 rounded-2xl shadow-lg shadow-cyan-500/20 hover:opacity-95 transform active:scale-[0.98] transition-all flex items-center justify-center space-x-2">
-                            <span>Sign In</span>
-                            <i data-feather="arrow-right" class="w-4 h-4"></i>
-                        </button>
-                    </form>
-
-                    <!-- Register Form (Hidden by default) -->
-                    <form id="register-form" onsubmit="handleRegister(event)" class="space-y-4 hidden">
-                        <div class="space-y-1.5">
-                            <label class="text-xs font-medium text-gray-300 ml-1">Username</label>
-                            <input type="text" id="reg-username" required placeholder="username" class="w-full bg-[#0a0b10]/80 border border-[#23263a] rounded-2xl px-4 py-3.5 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-cyan-400">
-                        </div>
-                        <div class="space-y-1.5">
-                            <label class="text-xs font-medium text-gray-300 ml-1">Email</label>
-                            <input type="email" id="reg-email" required placeholder="name@example.com" class="w-full bg-[#0a0b10]/80 border border-[#23263a] rounded-2xl px-4 py-3.5 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-cyan-400">
-                        </div>
-                        <div class="space-y-1.5">
-                            <label class="text-xs font-medium text-gray-300 ml-1">Password</label>
-                            <input type="password" id="reg-password" required placeholder="••••••••" class="w-full bg-[#0a0b10]/80 border border-[#23263a] rounded-2xl px-4 py-3.5 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-cyan-400">
-                        </div>
-                        <button type="submit" class="w-full vibra-gradient text-[#0a0b10] font-extrabold py-4 rounded-2xl shadow-lg shadow-cyan-500/20 hover:opacity-95 transition-all">Create Account</button>
-                    </form>
-
-                    <!-- Forgot Password Form (Hidden by default) -->
-                    <form id="forgot-form" onsubmit="handleForgot(event)" class="space-y-4 hidden">
-                        <div class="space-y-1.5">
-                            <label class="text-xs font-medium text-gray-300 ml-1">Enter your registered email</label>
-                            <input type="email" id="forgot-email" required placeholder="name@example.com" class="w-full bg-[#0a0b10]/80 border border-[#23263a] rounded-2xl px-4 py-3.5 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-cyan-400">
-                        </div>
-                        <button type="submit" class="w-full vibra-gradient text-[#0a0b10] font-extrabold py-4 rounded-2xl shadow-lg shadow-cyan-500/20">Send Recovery Link</button>
-                        <div class="text-center">
-                            <button type="button" onclick="switchAuthView('login')" class="text-xs text-gray-400 hover:text-white">Back to Sign In</button>
-                        </div>
-                    </form>
-
-                    <div id="auth-switcher" class="pt-2 text-center text-xs text-gray-400">
-                        <span id="switcher-text">Don't have an account?</span> 
-                        <button onclick="toggleRegisterView()" id="switcher-btn" class="text-cyan-400 font-semibold ml-1 hover:underline">Create Account</button>
-                    </div>
-
-                    <div class="relative flex py-2 items-center">
-                        <div class="flex-grow border-t border-[#23263a]"></div>
-                        <span class="flex-shrink mx-4 text-gray-500 text-[10px] uppercase tracking-widest">Or sandbox mode</span>
-                        <div class="flex-grow border-t border-[#23263a]"></div>
-                    </div>
-
-                    <button onclick="enableDemoMode()" class="w-full bg-[#13151f] border border-[#23263a] hover:border-cyan-500/40 text-white font-semibold py-3.5 rounded-2xl flex items-center justify-center space-x-2 transition-all group">
-                        <i data-feather="play-circle" class="w-4 h-4 text-cyan-400 group-hover:scale-110 transition-transform"></i>
-                        <span>Continue with Demo Mode</span>
-                    </button>
-                </div>
-
-                <!-- Footer -->
-                <div class="mt-8 text-center text-[10px] text-gray-500 tracking-wider">
-                    © 2026 VIBRA • Connect • Create • Discover
-                </div>
-
-            </div>
+  <div id="auth-screen" class="auth-container">
+    <div class="auth-card glass-panel">
+      <div class="vibra-brand-header">
+        <div class="vibra-logo-icon">
+          <svg viewBox="0 0 100 100" class="logo-svg">
+            <defs>
+              <linearGradient id="vibraGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#00f2fe" />
+                <stop offset="100%" stop-color="#4facfe" />
+              </linearGradient>
+              <linearGradient id="vibraGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#7f00ff" />
+                <stop offset="100%" stop-color="#e100ff" />
+              </linearGradient>
+            </defs>
+            <path d="M 15 20 L 50 85 L 85 20 L 68 20 L 50 58 L 32 20 Z" fill="url(#vibraGrad)"/>
+            <path d="M 35 20 L 50 50 L 65 20 L 78 20 L 50 72 L 22 20 Z" fill="url(#vibraGrad2)" opacity="0.85"/>
+          </svg>
         </div>
+        <h1 class="brand-name">VIBRA</h1>
+        <p class="brand-tagline">Connect • Create • Discover</p>
+      </div>
 
-        <!-- MAIN APPLICATION INTERFACE (Hidden until logged in) -->
-        <div id="main-interface" class="flex-1 flex max-w-7xl mx-auto w-full relative hidden">
-            <aside class="hidden md:flex flex-col w-64 border-r border-[#23263a] p-6 sticky top-0 h-screen justify-between bg-[#0a0b10]">
-                <div>
-                    <div class="flex items-center space-x-3 mb-10">
-                        <div class="w-10 h-10 rounded-2xl vibra-gradient flex items-center justify-center font-black text-xl text-[#0a0b10] shadow-lg shadow-cyan-500/20">V</div>
-                        <span class="text-2xl font-extrabold tracking-wider vibra-text-gradient">VIBRA</span>
-                    </div>
-                    <nav class="space-y-2">
-                        <button onclick="switchTab('home')" class="w-full flex items-center space-x-4 px-4 py-3.5 rounded-2xl text-sm font-semibold text-gray-400 hover:text-white hover:bg-[#13151f] transition-all"><i data-feather="home" class="w-5 h-5"></i><span>Home</span></button>
-                        <button onclick="switchTab('discover')" class="w-full flex items-center space-x-4 px-4 py-3.5 rounded-2xl text-sm font-semibold text-gray-400 hover:text-white hover:bg-[#13151f] transition-all"><i data-feather="compass" class="w-5 h-5"></i><span>Discover</span></button>
-                        <button onclick="switchTab('profile')" class="w-full flex items-center space-x-4 px-4 py-3.5 rounded-2xl text-sm font-semibold text-gray-400 hover:text-white hover:bg-[#13151f] transition-all"><i data-feather="user" class="w-5 h-5"></i><span>Profile</span></button>
-                    </nav>
-                </div>
-                <button onclick="logout()" class="flex items-center space-x-3 text-xs text-red-400 text-left px-4 py-3 hover:bg-red-500/10 rounded-2xl transition-all">
-                    <i data-feather="log-out" class="w-4 h-4"></i>
-                    <span>Sign Out</span>
-                </button>
-            </aside>
-            <main class="flex-1 pb-20 md:pb-0 overflow-y-auto">
-                <section id="tab-home" class="max-w-xl mx-auto p-4 space-y-6">
-                    <div id="feed-container" class="space-y-6"></div>
-                </section>
-                <section id="tab-discover" class="max-w-xl mx-auto p-4 space-y-6 hidden">
-                    <h2 class="text-lg font-bold">Discover</h2>
-                </section>
-                <section id="tab-profile" class="max-w-xl mx-auto p-4 space-y-6 hidden">
-                    <h2 id="profile-username" class="text-lg font-bold"></h2>
-                </section>
-            </main>
+      <form id="login-form" class="auth-form active">
+        <div class="form-group">
+          <label for="login-identifier">Email or Phone</label>
+          <input type="text" id="login-identifier" class="glass-input" placeholder="user@vibra.app or +123456789" required>
         </div>
+        <div class="form-group">
+          <label for="login-password">Password</label>
+          <input type="password" id="login-password" class="glass-input" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn btn-primary full-width">Sign In</button>
+        <div class="auth-links">
+          <a href="#" id="link-to-forgot">Forgot Password?</a>
+          <p>Don't have an account? <a href="#" id="link-to-register">Register</a></p>
+        </div>
+      </form>
+
+      <form id="register-form" class="auth-form hidden">
+        <div class="form-group">
+          <label for="reg-fullname">Full Name</label>
+          <input type="text" id="reg-fullname" class="glass-input" placeholder="Alex Morgan" required>
+        </div>
+        <div class="form-group">
+          <label for="reg-username">Username</label>
+          <input type="text" id="reg-username" class="glass-input" placeholder="alex_morgan" required>
+          <span id="username-status" class="input-status-msg"></span>
+        </div>
+        <div class="form-group">
+          <label for="reg-email">Email</label>
+          <input type="email" id="reg-email" class="glass-input" placeholder="alex@vibra.app" required>
+        </div>
+        <div class="form-group">
+          <label for="reg-password">Password</label>
+          <input type="password" id="reg-password" class="glass-input" placeholder="••••••••" required>
+        </div>
+        <div class="form-group">
+          <label for="reg-confirm-password">Confirm Password</label>
+          <input type="password" id="reg-confirm-password" class="glass-input" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn btn-primary full-width">Create Account</button>
+        <div class="auth-links">
+          <p>Already registered? <a href="#" id="link-to-login">Sign In</a></p>
+        </div>
+      </form>
+
+      <form id="forgot-form" class="auth-form hidden">
+        <p class="auth-subtitle">Enter your email to receive recovery instructions.</p>
+        <div class="form-group">
+          <label for="forgot-email">Email Address</label>
+          <input type="email" id="forgot-email" class="glass-input" placeholder="alex@vibra.app" required>
+        </div>
+        <button type="submit" class="btn btn-primary full-width">Send Reset Link</button>
+        <div class="auth-links">
+          <a href="#" id="back-to-login">Back to Sign In</a>
+        </div>
+      </form>
+
+      <div class="demo-mode-bar">
+        <span>No credentials?</span>
+        <button id="btn-demo-mode" class="btn btn-secondary btn-sm">Enter Interactive Demo</button>
+      </div>
     </div>
+  </div>
 
-    <script>
-        const SUPABASE_URL = 'YOUR_SUPABASE_URL';
-        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
-        let supabaseClient = null;
-        try { if(SUPABASE_URL !== 'YOUR_SUPABASE_URL') supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); } catch(e){}
+  <div id="app-screen" class="app-layout hidden">
+    <aside class="sidebar glass-panel">
+      <div class="sidebar-brand">
+        <div class="vibra-logo-icon small">
+          <svg viewBox="0 0 100 100" class="logo-svg">
+            <path d="M 15 20 L 50 85 L 85 20 L 68 20 L 50 58 L 32 20 Z" fill="url(#vibraGrad)"/>
+            <path d="M 35 20 L 50 50 L 65 20 L 78 20 L 50 72 L 22 20 Z" fill="url(#vibraGrad2)" opacity="0.85"/>
+          </svg>
+        </div>
+        <span class="brand-title">VIBRA</span>
+      </div>
 
-        let sessionUser = JSON.parse(localStorage.getItem('vibra_session')) || null;
+      <nav class="nav-menu">
+        <a href="#home" class="nav-item active" data-tab="home">
+          <i data-feather="home"></i> <span>Home</span>
+        </a>
+        <a href="#explore" class="nav-item" data-tab="explore">
+          <i data-feather="compass"></i> <span>Explore</span>
+        </a>
+        <a href="#create" class="nav-item" data-tab="create">
+          <i data-feather="plus-square"></i> <span>Create</span>
+        </a>
+        <a href="#notifications" class="nav-item" data-tab="notifications">
+          <i data-feather="bell"></i> <span>Notifications</span>
+          <span class="badge hidden" id="unread-notifications-badge">0</span>
+        </a>
+        <a href="#messages" class="nav-item" data-tab="messages">
+          <i data-feather="send"></i> <span>Messages</span>
+        </a>
+        <a href="#profile" class="nav-item" data-tab="profile">
+          <i data-feather="user"></i> <span>Profile</span>
+        </a>
+        <a href="#settings" class="nav-item" data-tab="settings">
+          <i data-feather="settings"></i> <span>Settings</span>
+        </a>
+      </nav>
 
-        function init() {
-            feather.replace();
-            if(sessionUser) {
-                document.getElementById('auth-screen').classList.add('hidden');
-                document.getElementById('main-interface').classList.remove('hidden');
-                renderHomeFeed();
-            } else {
-                document.getElementById('auth-screen').classList.remove('hidden');
-            }
-        }
+      <div class="sidebar-user-footer" id="sidebar-user-card">
+        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" class="avatar-sm" id="sidebar-user-avatar" alt="Avatar">
+        <div class="user-info">
+          <span class="user-fullname" id="sidebar-user-fullname">User</span>
+          <span class="user-handle" id="sidebar-user-handle">@user</span>
+        </div>
+      </div>
+    </aside>
 
-        function switchAuthView(view) {
-            document.getElementById('login-form').classList.add('hidden');
-            document.getElementById('register-form').classList.add('hidden');
-            document.getElementById('forgot-form').classList.add('hidden');
-            document.getElementById('auth-switcher').classList.add('hidden');
+    <main class="main-content">
+      <header class="mobile-top-bar glass-panel">
+        <div class="vibra-logo-icon small">
+          <svg viewBox="0 0 100 100" class="logo-svg">
+            <path d="M 15 20 L 50 85 L 85 20 L 68 20 L 50 58 L 32 20 Z" fill="url(#vibraGrad)"/>
+          </svg>
+        </div>
+        <span class="brand-title">VIBRA</span>
+        <div class="demo-pill hidden" id="demo-indicator">DEMO MODE</div>
+      </header>
 
-            if(view === 'login') {
-                document.getElementById('login-form').classList.remove('hidden');
-                document.getElementById('auth-switcher').classList.remove('hidden');
-                document.getElementById('switcher-text').innerText = "Don't have an account?";
-                document.getElementById('switcher-btn').innerText = "Create Account";
-            } else if(view === 'register') {
-                document.getElementById('register-form').classList.remove('hidden');
-                document.getElementById('auth-switcher').classList.remove('hidden');
-                document.getElementById('switcher-text').innerText = "Already have an account?";
-                document.getElementById('switcher-btn').innerText = "Sign In";
-            } else if(view === 'forgot') {
-                document.getElementById('forgot-form').classList.remove('hidden');
-            }
-            feather.replace();
-        }
+      <section id="tab-home" class="tab-content active">
+        <div class="stories-bar glass-panel">
+          <div class="story-item create-story" id="btn-create-story">
+            <div class="story-avatar-wrap">
+              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" alt="My Profile">
+              <div class="add-story-icon">+</div>
+            </div>
+            <span>Your Story</span>
+          </div>
+          <div id="stories-list" class="stories-flex flex-1"></div>
+        </div>
 
-        function toggleRegisterView() {
-            const isRegHidden = document.getElementById('register-form').classList.contains('hidden');
-            switchAuthView(isRegHidden ? 'register' : 'login');
-        }
+        <div id="feed-container" class="feed-container"></div>
+      </section>
 
-        async function handleEmailLogin(e) {
-            e.preventDefault();
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            if(supabaseClient) {
-                const {data, error} = await supabaseClient.auth.signInWithPassword({email, password});
-                if(error) { showError(error.message); return; }
-                sessionUser = data.user;
-            } else {
-                sessionUser = { id: 'demo_user', email, user_metadata: { username: email.split('@')[0] } };
-            }
-            localStorage.setItem('vibra_session', JSON.stringify(sessionUser));
-            init();
-        }
+      <section id="tab-explore" class="tab-content hidden">
+        <div class="search-bar-wrapper glass-panel">
+          <i data-feather="search"></i>
+          <input type="text" id="explore-search-input" placeholder="Search creators, hashtags, posts..." class="glass-input">
+        </div>
+        
+        <div class="explore-tags">
+          <button class="tag-pill active">#Trending</button>
+          <button class="tag-pill">#DigitalArt</button>
+          <button class="tag-pill">#Technology</button>
+          <button class="tag-pill">#Architecture</button>
+          <button class="tag-pill">#Photography</button>
+        </div>
 
-        async function handleRegister(e) {
-            e.preventDefault();
-            const email = document.getElementById('reg-email').value;
-            const password = document.getElementById('reg-password').value;
-            const username = document.getElementById('reg-username').value;
-            if(supabaseClient) {
-                const {data, error} = await supabaseClient.auth.signUp({ email, password, options: { data: { username } } });
-                if(error) { showError(error.message); return; }
-                sessionUser = data.user;
-            } else {
-                sessionUser = { id: 'demo_user', email, user_metadata: { username } };
-            }
-            localStorage.setItem('vibra_session', JSON.stringify(sessionUser));
-            init();
-        }
+        <div class="explore-grid" id="explore-grid"></div>
+      </section>
 
-        async function handleForgot(e) {
-            e.preventDefault();
-            const email = document.getElementById('forgot-email').value;
-            if(supabaseClient) {
-                await supabaseClient.auth.resetPasswordForEmail(email);
-            }
-            alert('Password reset link sent to ' + email);
-            switchAuthView('login');
-        }
+      <section id="tab-create" class="tab-content hidden">
+        <div class="create-post-card glass-panel">
+          <h2>Create New Vibra</h2>
+          <form id="create-post-form">
+            <div class="media-upload-area" id="media-drop-zone">
+              <input type="file" id="post-media-input" accept="image/*,video/*" hidden>
+              <div class="upload-placeholder" id="upload-placeholder">
+                <i data-feather="upload-cloud"></i>
+                <p>Drag and drop image/video here, or <span>browse</span></p>
+                <small>PNG, JPG, MP4 up to 25MB</small>
+              </div>
+              <div id="media-preview-container" class="media-preview hidden"></div>
+            </div>
 
-        function enableDemoMode() {
-            sessionUser = { id: 'demo_sandbox_user', email: 'demo@vibra.app', user_metadata: { username: 'vibra_guest', full_name: 'Vibra Guest' } };
-            localStorage.setItem('vibra_session', JSON.stringify(sessionUser));
-            init();
-        }
+            <div class="form-group margin-top">
+              <textarea id="post-caption" class="glass-input" rows="4" placeholder="What's vibing today? Use #hashtags and @mentions..."></textarea>
+            </div>
 
-        function showError(msg) {
-            const errBox = document.getElementById('auth-error');
-            errBox.innerText = msg;
-            errBox.classList.remove('hidden');
-        }
+            <div class="post-actions-bar">
+              <button type="button" class="btn btn-secondary" id="btn-cancel-post">Cancel</button>
+              <button type="submit" class="btn btn-primary" id="btn-submit-post">Publish</button>
+            </div>
+          </form>
+        </div>
+      </section>
 
-        function logout() {
-            if(supabaseClient) supabaseClient.auth.signOut();
-            localStorage.removeItem('vibra_session');
-            sessionUser = null;
-            init();
-        }
+      <section id="tab-notifications" class="tab-content hidden">
+        <div class="notifications-header glass-panel">
+          <h3>Notifications</h3>
+          <button class="btn btn-sm btn-secondary" id="btn-mark-all-read">Mark all as read</button>
+        </div>
+        <div class="notifications-list" id="notifications-list"></div>
+      </section>
 
-        function switchTab(tab) {
-            ['home', 'discover', 'profile'].forEach(t => document.getElementById('tab-' + t).classList.add('hidden'));
-            document.getElementById('tab-' + tab).classList.remove('hidden');
-            if(tab === 'profile') {
-                document.getElementById('profile-username').innerText = '@' + (sessionUser?.user_metadata?.username || 'user');
-            }
-        }
+      <section id="tab-messages" class="tab-content hidden">
+        <div class="messaging-layout glass-panel">
+          <div class="conversations-list-pane">
+            <div class="conversations-header">
+              <h4>Direct Messages</h4>
+            </div>
+            <div id="conversations-list" class="conversations-items"></div>
+          </div>
+          <div class="chat-pane" id="active-chat-pane">
+            <div class="chat-header hidden" id="chat-header">
+              <img src="" id="chat-user-avatar" class="avatar-sm" alt="User Avatar">
+              <div>
+                <strong id="chat-user-name">User</strong>
+                <div class="status-online" id="chat-user-status">Online</div>
+              </div>
+            </div>
+            <div class="chat-messages" id="chat-messages-container">
+              <div class="empty-state">Select a chat to start vibing.</div>
+            </div>
+            <form id="chat-form" class="chat-input-bar hidden">
+              <input type="text" id="chat-message-input" class="glass-input" placeholder="Type a message..." required>
+              <button type="submit" class="btn btn-primary btn-icon"><i data-feather="send"></i></button>
+            </form>
+          </div>
+        </div>
+      </section>
 
-        function renderHomeFeed() {
-            const feed = document.getElementById('feed-container');
-            feed.innerHTML = `
-                <div class="glass-panel p-5 rounded-3xl border border-[#23263a]">
-                    <div class="flex items-center space-x-3 mb-4">
-                        <div class="w-10 h-10 rounded-full vibra-gradient"></div>
-                        <div><h4 class="text-sm font-bold">vibra_official</h4><p class="text-[10px] text-gray-400">Just now</p></div>
-                    </div>
-                    <div class="w-full h-72 bg-[#0a0b10] rounded-2xl mb-4 flex items-center justify-center text-xs text-gray-500 border border-[#23263a]">[Vibra Dynamic Media Stream]</div>
-                    <p class="text-sm">Welcome to VIBRA! Connect • Create • Discover 🚀 #vibra</p>
-                </div>
-            `;
-            feather.replace();
-        }
+      <section id="tab-profile" class="tab-content hidden">
+        <div class="profile-header-card glass-panel">
+          <div class="profile-top-row">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" id="prof-avatar" class="profile-avatar" alt="Profile Picture">
+            <div class="profile-meta">
+              <div class="profile-name-actions">
+                <h2 id="prof-fullname">Alex Morgan</h2>
+                <button class="btn btn-secondary btn-sm" id="btn-edit-profile">Edit Profile</button>
+              </div>
+              <p class="profile-handle" id="prof-handle">@alex_morgan</p>
+              <div class="profile-stats">
+                <span><strong id="prof-posts-count">0</strong> posts</span>
+                <span><strong id="prof-followers-count">1.4k</strong> followers</span>
+                <span><strong id="prof-following-count">482</strong> following</span>
+              </div>
+              <p class="profile-bio" id="prof-bio">Digital creator, UI/UX enthusiast & tech explorer 🚀</p>
+              <a href="#" class="profile-website" id="prof-website" target="_blank">vibra.app/alex</a>
+            </div>
+          </div>
 
-        window.onload = init;
-    </script>
+          <div class="profile-tabs">
+            <button class="prof-tab active" data-target="my-posts">Posts</button>
+            <button class="prof-tab" data-target="saved-posts">Saved</button>
+          </div>
+        </div>
+
+        <div id="profile-grid-posts" class="explore-grid margin-top"></div>
+        <div id="profile-grid-saved" class="explore-grid margin-top hidden"></div>
+      </section>
+
+      <section id="tab-settings" class="tab-content hidden">
+        <div class="settings-card glass-panel">
+          <h2>Settings & Preferences</h2>
+          <div class="settings-section">
+            <h4>Appearance</h4>
+            <div class="setting-row">
+              <span>Theme Mode</span>
+              <select id="setting-theme" class="glass-input inline">
+                <option value="dark">Dark Glassmorphism (Default)</option>
+                <option value="light">Light Glassmorphism</option>
+              </select>
+            </div>
+          </div>
+          <div class="settings-section">
+            <h4>Account Privacy</h4>
+            <div class="setting-row">
+              <span>Private Account</span>
+              <input type="checkbox" id="setting-privacy-toggle">
+            </div>
+          </div>
+          <div class="settings-section">
+            <h4>Supabase Configuration</h4>
+            <div class="form-group">
+              <label>Supabase Project URL</label>
+              <input type="text" id="cfg-supabase-url" class="glass-input" placeholder="https://xyz.supabase.co">
+            </div>
+            <div class="form-group">
+              <label>Supabase Anon Key</label>
+              <input type="password" id="cfg-supabase-key" class="glass-input" placeholder="eyJhbGciOi...">
+            </div>
+            <button class="btn btn-secondary" id="btn-save-supabase-cfg">Save Connection Config</button>
+          </div>
+          <div class="settings-section">
+            <button class="btn btn-danger full-width" id="btn-logout">Sign Out of VIBRA</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <nav class="mobile-nav glass-panel">
+      <a href="#home" class="mobile-nav-item active" data-tab="home"><i data-feather="home"></i></a>
+      <a href="#explore" class="mobile-nav-item" data-tab="explore"><i data-feather="compass"></i></a>
+      <a href="#create" class="mobile-nav-item" data-tab="create"><i data-feather="plus-square"></i></a>
+      <a href="#notifications" class="mobile-nav-item" data-tab="notifications"><i data-feather="bell"></i></a>
+      <a href="#messages" class="mobile-nav-item" data-tab="messages"><i data-feather="send"></i></a>
+      <a href="#profile" class="mobile-nav-item" data-tab="profile"><i data-feather="user"></i></a>
+    </nav>
+  </div>
+
+  <div id="comments-modal" class="modal-overlay hidden">
+    <div class="modal-card glass-panel">
+      <div class="modal-header">
+        <h4>Comments</h4>
+        <button class="btn-close" id="btn-close-comments">&times;</button>
+      </div>
+      <div class="comments-list" id="modal-comments-list"></div>
+      <form id="comment-form" class="comment-input-form">
+        <input type="text" id="comment-input" class="glass-input" placeholder="Add a comment..." required>
+        <button type="submit" class="btn btn-primary btn-sm">Post</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="edit-profile-modal" class="modal-overlay hidden">
+    <div class="modal-card glass-panel">
+      <div class="modal-header">
+        <h4>Edit Profile</h4>
+        <button class="btn-close" id="btn-close-edit-profile">&times;</button>
+      </div>
+      <form id="edit-profile-form">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="edit-fullname" class="glass-input" required>
+        </div>
+        <div class="form-group">
+          <label>Bio</label>
+          <textarea id="edit-bio" class="glass-input" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Website</label>
+          <input type="url" id="edit-website" class="glass-input">
+        </div>
+        <button type="submit" class="btn btn-primary full-width margin-top">Save Changes</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="app.js"></script>
 </body>
 </html>
