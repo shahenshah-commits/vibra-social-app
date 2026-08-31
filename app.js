@@ -17,220 +17,190 @@ document.addEventListener("DOMContentLoaded", async () => {
   const notificationBtn = document.getElementById("notificationBtn");
   const createBtn = document.getElementById("createBtn");
 
-  // ==========================
-  // SPLASH SCREEN
-  // ==========================
+  const emailInput = document.getElementById("email");
+  const passwordInput = document.getElementById("password");
+  const togglePassword = document.getElementById("togglePassword");
 
-  setTimeout(() => {
-    if (splash) splash.classList.add("hide");
+  // ==========================================
+  // IMPORTANT:
+  // Hide the application until authentication
+  // has been checked.
+  // ==========================================
 
-    setTimeout(() => {
-      if (splash) splash.style.display = "none";
-      if (app) app.classList.remove("hidden");
-    }, 650);
+  if (app) {
+    app.classList.add("hidden");
+  }
 
-  }, 1800);
+  // ==========================================
+  // PASSWORD SHOW / HIDE
+  // ==========================================
 
+  if (togglePassword && passwordInput) {
 
-  // ==========================
-  // ENTER VIBRA
-  // ==========================
+    togglePassword.addEventListener("click", () => {
 
-  if (startBtn) {
-    startBtn.addEventListener("click", () => {
-      if (authSection) {
+      if (passwordInput.type === "password") {
+
+        passwordInput.type = "text";
+        togglePassword.textContent = "🙈";
+        togglePassword.setAttribute(
+          "aria-label",
+          "Hide password"
+        );
+
+      } else {
+
+        passwordInput.type = "password";
+        togglePassword.textContent = "👁️";
+        togglePassword.setAttribute(
+          "aria-label",
+          "Show password"
+        );
+
+      }
+
+    });
+
+  }
+
+  // ==========================================
+  // CHECK AUTHENTICATION
+  // ==========================================
+
+  const {
+    data: { session },
+    error: sessionError
+  } = await supabaseClient.auth.getSession();
+
+  if (sessionError) {
+    console.error(sessionError);
+  }
+
+  // ==========================================
+  // USER IS LOGGED IN
+  // ==========================================
+
+  if (session) {
+
+    showApp();
+
+  } else {
+
+    // User is NOT logged in.
+    // Keep the app hidden and show login area.
+    showLoginOnly();
+
+  }
+
+  // ==========================================
+  // AUTH STATE CHANGES
+  // ==========================================
+
+  supabaseClient.auth.onAuthStateChange(
+    async (event, session) => {
+
+      if (
+        event === "SIGNED_IN" &&
+        session
+      ) {
+
+        showApp();
+
+        showMessage(
+          "Login successful! Welcome to VIBRA ✨"
+        );
+
+      }
+
+      if (event === "SIGNED_OUT") {
+
+        hideApp();
+
+        showMessage(
+          "You have been logged out."
+        );
+
+      }
+
+    }
+  );
+
+  // ==========================================
+  // SPLASH
+  // ==========================================
+
+  function showApp() {
+
+    if (splash) {
+      splash.classList.add("hide");
+
+      setTimeout(() => {
+        splash.style.display = "none";
+      }, 650);
+    }
+
+    if (app) {
+      app.classList.remove("hidden");
+    }
+
+  }
+
+  // ==========================================
+  // SHOW LOGIN ONLY
+  // ==========================================
+
+  function showLoginOnly() {
+
+    if (splash) {
+      splash.classList.add("hide");
+
+      setTimeout(() => {
+        splash.style.display = "none";
+      }, 650);
+    }
+
+    if (app) {
+      app.classList.remove("hidden");
+    }
+
+    if (authSection) {
+
+      setTimeout(() => {
+
         authSection.scrollIntoView({
           behavior: "smooth",
           block: "center"
         });
-      }
-    });
-  }
 
+      }, 250);
 
-  // ==========================
-  // CHECK CURRENT SESSION
-  // ==========================
-
-  const {
-    data: { session }
-  } = await supabaseClient.auth.getSession();
-
-  if (session) {
-    showMessage(
-      `Welcome back, ${session.user.email}!`
-    );
-  }
-
-
-  // ==========================
-  // AUTH STATE LISTENER
-  // ==========================
-
-  supabaseClient.auth.onAuthStateChange((event, session) => {
-
-    if (event === "SIGNED_IN" && session) {
-      showMessage(
-        `Successfully signed in as ${session.user.email}`
-      );
     }
 
-    if (event === "SIGNED_OUT") {
-      showMessage("You have been logged out.");
+  }
+
+  // ==========================================
+  // HIDE APP AFTER LOGOUT
+  // ==========================================
+
+  function hideApp() {
+
+    if (app) {
+      app.classList.add("hidden");
     }
 
-  });
-
-
-  // ==========================
-  // LOGIN / SIGNUP
-  // ==========================
-
-  if (loginForm) {
-
-    loginForm.addEventListener("submit", async (event) => {
-
-      event.preventDefault();
-
-      const email =
-        document.getElementById("email").value.trim();
-
-      const password =
-        document.getElementById("password").value;
-
-      message.textContent = "";
-
-      if (!email || !password) {
-        showMessage(
-          "Please enter your email and password."
-        );
-        return;
-      }
-
-      if (password.length < 6) {
-        showMessage(
-          "Password must contain at least 6 characters."
-        );
-        return;
-      }
-
-      const submitButton =
-        loginForm.querySelector("button[type='submit']");
-
-      if (submitButton) {
-        submitButton.disabled = true;
-        submitButton.textContent = "Connecting...";
-      }
-
-      try {
-
-        // First try LOGIN
-        const { data, error } =
-          await supabaseClient.auth.signInWithPassword({
-            email,
-            password
-          });
-
-        if (error) {
-
-          // If account doesn't exist, offer signup
-          if (
-            error.message.toLowerCase().includes("invalid login")
-          ) {
-
-            const createAccount =
-              confirm(
-                "This account was not found.\n\nDo you want to create a new VIBRA account?"
-              );
-
-            if (createAccount) {
-
-              const { data: signupData, error: signupError } =
-                await supabaseClient.auth.signUp({
-                  email,
-                  password
-                });
-
-              if (signupError) {
-                throw signupError;
-              }
-
-              if (signupData.session) {
-
-                showMessage(
-                  "VIBRA account created successfully! 🎉"
-                );
-
-              } else {
-
-                showMessage(
-                  "Account created! Please check your email to verify your account."
-                );
-
-              }
-
-            }
-
-          } else {
-            throw error;
-          }
-
-        } else {
-
-          if (data.session) {
-
-            showMessage(
-              "Login successful! Welcome to VIBRA ✨"
-            );
-
-          }
-
-        }
-
-      } catch (error) {
-
-        console.error("Authentication error:", error);
-
-        showMessage(
-          getFriendlyAuthError(error.message)
-        );
-
-      } finally {
-
-        if (submitButton) {
-          submitButton.disabled = false;
-          submitButton.textContent = "Continue";
-        }
-
-      }
-
-    });
+    if (splash) {
+      splash.style.display = "none";
+    }
 
   }
 
+  // ==========================================
+  // ENTER VIBRA BUTTON
+  // ==========================================
 
-  // ==========================
-  // NOTIFICATION
-  // ==========================
+  if (startBtn) {
 
-  if (notificationBtn) {
-
-    notificationBtn.addEventListener("click", () => {
-
-      showToast("Notifications will appear here 🔔");
-
-    });
-
-  }
-
-
-  // ==========================
-  // CREATE POST
-  // ==========================
-
-  if (createBtn) {
-
-    createBtn.addEventListener("click", async () => {
+    startBtn.addEventListener("click", async () => {
 
       const {
         data: { session }
@@ -238,91 +208,365 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       if (!session) {
 
-        showToast(
-          "Please login first to create a post."
-        );
-
         if (authSection) {
+
           authSection.scrollIntoView({
             behavior: "smooth",
             block: "center"
           });
+
         }
+
+        showMessage(
+          "Please login or create an account first."
+        );
 
         return;
       }
 
-      showToast(
-        "Post creator will be added next."
-      );
+      showApp();
 
     });
 
   }
 
+  // ==========================================
+  // LOGIN / SIGNUP
+  // ==========================================
 
-  // ==========================
+  if (loginForm) {
+
+    loginForm.addEventListener(
+      "submit",
+      async (event) => {
+
+        event.preventDefault();
+
+        const email =
+          emailInput.value.trim();
+
+        const password =
+          passwordInput.value;
+
+        if (!email || !password) {
+
+          showMessage(
+            "Please enter your email and password."
+          );
+
+          return;
+        }
+
+        if (password.length < 6) {
+
+          showMessage(
+            "Password must contain at least 6 characters."
+          );
+
+          return;
+        }
+
+        const button =
+          loginForm.querySelector(
+            "button[type='submit']"
+          );
+
+        if (button) {
+
+          button.disabled = true;
+          button.textContent = "Connecting...";
+
+        }
+
+        try {
+
+          // ==================================
+          // TRY LOGIN
+          // ==================================
+
+          const {
+            data: loginData,
+            error: loginError
+          } =
+            await supabaseClient.auth
+              .signInWithPassword({
+                email,
+                password
+              });
+
+          if (!loginError && loginData.session) {
+
+            showMessage(
+              "Login successful! Welcome to VIBRA ✨"
+            );
+
+            return;
+
+          }
+
+          // ==================================
+          // ACCOUNT NOT FOUND
+          // ==================================
+
+          if (
+            loginError &&
+            (
+              loginError.message
+                .toLowerCase()
+                .includes("invalid login") ||
+              loginError.message
+                .toLowerCase()
+                .includes("invalid credentials")
+            )
+          ) {
+
+            const createAccount =
+              confirm(
+                "This account was not found or the password is incorrect.\n\nDo you want to create a new VIBRA account?"
+              );
+
+            if (!createAccount) {
+              return;
+            }
+
+            // ==================================
+            // CREATE ACCOUNT
+            // ==================================
+
+            const {
+              data: signupData,
+              error: signupError
+            } =
+              await supabaseClient.auth.signUp({
+                email,
+                password
+              });
+
+            if (signupError) {
+              throw signupError;
+            }
+
+            // ==================================
+            // SIGNUP SUCCESS
+            // ==================================
+
+            if (signupData.session) {
+
+              showMessage(
+                "🎉 VIBRA account created successfully!"
+              );
+
+              showApp();
+
+            } else {
+
+              showMessage(
+                "✅ Account created! Please check your email and verify your account."
+              );
+
+            }
+
+            return;
+          }
+
+          // Other login errors
+          if (loginError) {
+            throw loginError;
+          }
+
+        } catch (error) {
+
+          console.error(
+            "Authentication error:",
+            error
+          );
+
+          showMessage(
+            getFriendlyError(error.message)
+          );
+
+        } finally {
+
+          if (button) {
+
+            button.disabled = false;
+            button.textContent = "Continue";
+
+          }
+
+        }
+
+      }
+    );
+
+  }
+
+  // ==========================================
+  // NOTIFICATIONS
+  // ==========================================
+
+  if (notificationBtn) {
+
+    notificationBtn.addEventListener(
+      "click",
+      async () => {
+
+        const {
+          data: { session }
+        } =
+          await supabaseClient.auth
+            .getSession();
+
+        if (!session) {
+
+          showMessage(
+            "Please login first."
+          );
+
+          return;
+
+        }
+
+        showToast(
+          "Notifications will appear here 🔔"
+        );
+
+      }
+    );
+
+  }
+
+  // ==========================================
+  // CREATE BUTTON
+  // ==========================================
+
+  if (createBtn) {
+
+    createBtn.addEventListener(
+      "click",
+      async () => {
+
+        const {
+          data: { session }
+        } =
+          await supabaseClient.auth
+            .getSession();
+
+        if (!session) {
+
+          showMessage(
+            "Please login first to create a post."
+          );
+
+          return;
+
+        }
+
+        showToast(
+          "Post creator will be added next."
+        );
+
+      }
+    );
+
+  }
+
+  // ==========================================
   // NAVIGATION
-  // ==========================
+  // ==========================================
 
   const navItems =
     document.querySelectorAll(".nav-item");
 
   navItems.forEach((item) => {
 
-    item.addEventListener("click", () => {
+    item.addEventListener(
+      "click",
+      async () => {
 
-      navItems.forEach((nav) => {
-        nav.classList.remove("active");
-      });
+        const {
+          data: { session }
+        } =
+          await supabaseClient.auth
+            .getSession();
 
-      item.classList.add("active");
+        if (!session) {
 
-    });
+          showMessage(
+            "Please login first."
+          );
+
+          return;
+
+        }
+
+        navItems.forEach((nav) => {
+          nav.classList.remove("active");
+        });
+
+        item.classList.add("active");
+
+      }
+    );
 
   });
 
+  // ==========================================
+  // FRIENDLY ERROR
+  // ==========================================
 
-  // ==========================
-  // FRIENDLY AUTH ERRORS
-  // ==========================
+  function getFriendlyError(error) {
 
-  function getFriendlyAuthError(error) {
+    const text =
+      String(error || "").toLowerCase();
 
-    const text = String(error || "").toLowerCase();
+    if (
+      text.includes("email not confirmed")
+    ) {
 
-    if (text.includes("invalid login")) {
-      return "Email or password is incorrect.";
-    }
-
-    if (text.includes("email not confirmed")) {
       return "Please verify your email before logging in.";
+
     }
 
-    if (text.includes("already registered")) {
-      return "This email is already registered.";
+    if (
+      text.includes("already registered")
+    ) {
+
+      return "This email is already registered. Try logging in.";
+
     }
 
-    if (text.includes("password")) {
+    if (
+      text.includes("password")
+    ) {
+
       return "Please check your password.";
+
     }
 
-    if (text.includes("rate limit")) {
-      return "Too many attempts. Please try again later.";
+    if (
+      text.includes("rate limit")
+    ) {
+
+      return "Too many attempts. Please wait and try again.";
+
     }
 
-    if (text.includes("network")) {
+    if (
+      text.includes("network")
+    ) {
+
       return "Network error. Please check your internet connection.";
+
     }
 
     return "Authentication failed. Please try again.";
 
   }
 
-
-  // ==========================
+  // ==========================================
   // MESSAGE
-  // ==========================
+  // ==========================================
 
   function showMessage(text) {
 
@@ -339,10 +583,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   }
 
-
-  // ==========================
+  // ==========================================
   // TOAST
-  // ==========================
+  // ==========================================
 
   function showToast(text) {
 
@@ -354,11 +597,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     toast.style.position = "fixed";
     toast.style.left = "50%";
     toast.style.bottom = "95px";
-    toast.style.transform = "translateX(-50%)";
+    toast.style.transform =
+      "translateX(-50%)";
+
     toast.style.zIndex = "9999";
 
-    toast.style.padding = "12px 18px";
-    toast.style.borderRadius = "14px";
+    toast.style.padding =
+      "12px 18px";
+
+    toast.style.borderRadius =
+      "14px";
 
     toast.style.background =
       "rgba(15,17,25,0.95)";
@@ -366,21 +614,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     toast.style.border =
       "1px solid rgba(0,240,255,0.25)";
 
-    toast.style.color = "#ffffff";
+    toast.style.color =
+      "#ffffff";
 
-    toast.style.fontSize = "13px";
-    toast.style.fontWeight = "600";
+    toast.style.fontSize =
+      "13px";
+
+    toast.style.fontWeight =
+      "600";
 
     toast.style.backdropFilter =
       "blur(15px)";
-
-    toast.style.boxShadow =
-      "0 0 25px rgba(0,240,255,0.15)";
-
-    toast.style.opacity = "0";
-
-    toast.style.transition =
-      "opacity 0.3s ease, transform 0.3s ease";
 
     document.body.appendChild(toast);
 
@@ -391,9 +635,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     setTimeout(() => {
 
       toast.style.opacity = "0";
-
-      toast.style.transform =
-        "translateX(-50%) translateY(10px)";
 
       setTimeout(() => {
         toast.remove();
