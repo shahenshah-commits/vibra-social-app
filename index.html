@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>VIBRA — Premium Social Network</title>
+
+  <meta
+    name="description"
+    content="VIBRA — a premium futuristic social network."
+  >
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- Splash Screen -->
+  <div id="splash" class="splash">
+    <div class="splash-logo">VIBRA</div>
+    <div class="loader">
+      <span></span>
+    </div>
+    <p>Entering the VIBRA universe...</p>
+  </div>
+
+  <!-- Application -->
+  <div id="app" class="app hidden">
+
+    <!-- Top Bar -->
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">V</div>
+        <span>VIBRA</span>
+      </div>
+
+      <button class="icon-btn" id="notificationBtn" aria-label="Notifications">
+        ♡
+      </button>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+
+      <!-- Welcome -->
+      <section class="hero glass">
+        <div>
+          <p class="eyebrow">WELCOME TO</p>
+          <h1>VIBRA</h1>
+          <p class="hero-text">
+            Connect. Create. Share your world.
+          </p>
+
+          <button class="primary-btn" id="startBtn">
+            Enter VIBRA
+          </button>
+        </div>
+
+        <div class="orb orb-one"></div>
+        <div class="orb orb-two"></div>
+      </section>
+
+      <!-- Feature Cards -->
+      <section class="section">
+        <div class="section-title">
+          <h2>Explore VIBRA</h2>
+          <span>∞</span>
+        </div>
+
+        <div class="feature-grid">
+
+          <article class="feature-card glass">
+            <div class="feature-icon">✦</div>
+            <h3>Feed</h3>
+            <p>Discover posts from the VIBRA community.</p>
+          </article>
+
+          <article class="feature-card glass">
+            <div class="feature-icon">▶</div>
+            <h3>Reels</h3>
+            <p>Watch and share short-form videos.</p>
+          </article>
+
+          <article class="feature-card glass">
+            <div class="feature-icon">◉</div>
+            <h3>Stories</h3>
+            <p>Share moments that disappear after 24 hours.</p>
+          </article>
+
+          <article class="feature-card glass">
+            <div class="feature-icon">⌁</div>
+            <h3>Messages</h3>
+            <p>Connect privately with your friends.</p>
+          </article>
+
+        </div>
+      </section>
+
+      <!-- Login Area -->
+      <section id="authSection" class="auth-card glass">
+
+        <div class="auth-heading">
+          <p class="eyebrow">YOUR ACCOUNT</p>
+          <h2>Join VIBRA</h2>
+          <p>Create your account and enter the community.</p>
+        </div>
+
+        <form id="loginForm">
+
+          <label>
+            Email
+            <input
+              type="email"
+              id="email"
+              placeholder="Enter your email"
+              required
+            >
+          </label>
+
+          <label>
+            Password
+            <input
+              type="password"
+              id="password"
+              placeholder="Enter your password"
+              required
+            >
+          </label>
+
+          <button class="primary-btn full" type="submit">
+            Continue
+          </button>
+
+        </form>
+
+        <div id="message" class="message"></div>
+
+        <p class="security-note">
+          🔒 Your account will use secure authentication.
+        </p>
+
+      </section>
+
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav glass">
+
+      <button class="nav-item active">
+        <span>⌂</span>
+        <small>Home</small>
+      </button>
+
+      <button class="nav-item">
+        <span>⌕</span>
+        <small>Explore</small>
+      </button>
+
+      <button class="create-btn" id="createBtn">
+        +
+      </button>
+
+      <button class="nav-item">
+        <span>▶</span>
+        <small>Reels</small>
+      </button>
+
+      <button class="nav-item">
+        <span>◯</span>
+        <small>Profile</small>
+      </button>
+
+    </nav>
+
+  </div>
+
+  <script src="app.js"></script>
+
+</body>
+</html>
