@@ -21,19 +21,21 @@ document.addEventListener("DOMContentLoaded", async () => {
   const passwordInput = document.getElementById("password");
   const togglePassword = document.getElementById("togglePassword");
 
-  // ==========================================
-  // IMPORTANT:
-  // Hide the application until authentication
-  // has been checked.
-  // ==========================================
+  /*
+  ==========================================
+  INITIAL STATE
+  ==========================================
+  */
 
   if (app) {
     app.classList.add("hidden");
   }
 
-  // ==========================================
-  // PASSWORD SHOW / HIDE
-  // ==========================================
+  /*
+  ==========================================
+  PASSWORD SHOW / HIDE
+  ==========================================
+  */
 
   if (togglePassword && passwordInput) {
 
@@ -63,46 +65,43 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   }
 
-  // ==========================================
-  // CHECK AUTHENTICATION
-  // ==========================================
+  /*
+  ==========================================
+  CHECK EXISTING SUPABASE SESSION
+  ==========================================
+  */
 
   const {
     data: { session },
-    error: sessionError
+    error
   } = await supabaseClient.auth.getSession();
 
-  if (sessionError) {
-    console.error(sessionError);
+  if (error) {
+    console.error("Session error:", error);
   }
-
-  // ==========================================
-  // USER IS LOGGED IN
-  // ==========================================
 
   if (session) {
 
+    // Already logged in
     showApp();
 
   } else {
 
-    // User is NOT logged in.
-    // Keep the app hidden and show login area.
-    showLoginOnly();
+    // NOT logged in
+    showLoginScreen();
 
   }
 
-  // ==========================================
-  // AUTH STATE CHANGES
-  // ==========================================
+  /*
+  ==========================================
+  AUTH STATE LISTENER
+  ==========================================
+  */
 
   supabaseClient.auth.onAuthStateChange(
-    async (event, session) => {
+    (event, session) => {
 
-      if (
-        event === "SIGNED_IN" &&
-        session
-      ) {
+      if (event === "SIGNED_IN" && session) {
 
         showApp();
 
@@ -116,6 +115,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         hideApp();
 
+        showLoginScreen();
+
         showMessage(
           "You have been logged out."
         );
@@ -125,9 +126,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   );
 
-  // ==========================================
-  // SPLASH
-  // ==========================================
+  /*
+  ==========================================
+  SHOW APP ONLY AFTER LOGIN
+  ==========================================
+  */
 
   function showApp() {
 
@@ -136,7 +139,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       setTimeout(() => {
         splash.style.display = "none";
-      }, 650);
+      }, 500);
     }
 
     if (app) {
@@ -145,25 +148,36 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   }
 
-  // ==========================================
-  // SHOW LOGIN ONLY
-  // ==========================================
+  /*
+  ==========================================
+  SHOW LOGIN SCREEN
+  ==========================================
+  */
 
-  function showLoginOnly() {
+  function showLoginScreen() {
 
     if (splash) {
+
       splash.classList.add("hide");
 
       setTimeout(() => {
         splash.style.display = "none";
-      }, 650);
+      }, 500);
+
     }
 
+    /*
+    IMPORTANT:
+    App remains hidden until authentication.
+    */
+
     if (app) {
-      app.classList.remove("hidden");
+      app.classList.add("hidden");
     }
 
     if (authSection) {
+
+      authSection.style.display = "block";
 
       setTimeout(() => {
 
@@ -172,15 +186,17 @@ document.addEventListener("DOMContentLoaded", async () => {
           block: "center"
         });
 
-      }, 250);
+      }, 300);
 
     }
 
   }
 
-  // ==========================================
-  // HIDE APP AFTER LOGOUT
-  // ==========================================
+  /*
+  ==========================================
+  HIDE APP
+  ==========================================
+  */
 
   function hideApp() {
 
@@ -188,15 +204,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       app.classList.add("hidden");
     }
 
-    if (splash) {
-      splash.style.display = "none";
-    }
-
   }
 
-  // ==========================================
-  // ENTER VIBRA BUTTON
-  // ==========================================
+  /*
+  ==========================================
+  ENTER VIBRA
+  ==========================================
+  */
 
   if (startBtn) {
 
@@ -208,20 +222,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       if (!session) {
 
-        if (authSection) {
-
-          authSection.scrollIntoView({
-            behavior: "smooth",
-            block: "center"
-          });
-
-        }
+        showLoginScreen();
 
         showMessage(
-          "Please login or create an account first."
+          "🔐 Please login or create an account first."
         );
 
         return;
+
       }
 
       showApp();
@@ -230,9 +238,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   }
 
-  // ==========================================
-  // LOGIN / SIGNUP
-  // ==========================================
+  /*
+  ==========================================
+  LOGIN / CREATE ACCOUNT
+  ==========================================
+  */
 
   if (loginForm) {
 
@@ -242,11 +252,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         event.preventDefault();
 
-        const email =
-          emailInput.value.trim();
-
-        const password =
-          passwordInput.value;
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
 
         if (!email || !password) {
 
@@ -255,6 +262,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           );
 
           return;
+
         }
 
         if (password.length < 6) {
@@ -264,6 +272,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           );
 
           return;
+
         }
 
         const button =
@@ -280,98 +289,113 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         try {
 
-          // ==================================
-          // TRY LOGIN
-          // ==================================
+          /*
+          ==================================
+          TRY LOGIN
+          ==================================
+          */
 
           const {
             data: loginData,
             error: loginError
           } =
-            await supabaseClient.auth
-              .signInWithPassword({
-                email,
-                password
-              });
+            await supabaseClient.auth.signInWithPassword({
+              email: email,
+              password: password
+            });
+
+          /*
+          ==================================
+          LOGIN SUCCESS
+          ==================================
+          */
 
           if (!loginError && loginData.session) {
 
             showMessage(
-              "Login successful! Welcome to VIBRA ✨"
+              "✨ Login successful! Welcome to VIBRA."
             );
 
             return;
 
           }
 
-          // ==================================
-          // ACCOUNT NOT FOUND
-          // ==================================
+          /*
+          ==================================
+          LOGIN FAILED
+          ==================================
+          */
 
-          if (
-            loginError &&
-            (
-              loginError.message
-                .toLowerCase()
-                .includes("invalid login") ||
-              loginError.message
-                .toLowerCase()
-                .includes("invalid credentials")
-            )
-          ) {
+          if (loginError) {
 
-            const createAccount =
-              confirm(
+            const errorText =
+              loginError.message.toLowerCase();
+
+            /*
+            Ask whether user wants to create
+            account if credentials are invalid.
+            */
+
+            if (
+              errorText.includes("invalid login") ||
+              errorText.includes("invalid credentials")
+            ) {
+
+              const createAccount = confirm(
                 "This account was not found or the password is incorrect.\n\nDo you want to create a new VIBRA account?"
               );
 
-            if (!createAccount) {
+              if (!createAccount) {
+                return;
+              }
+
+              /*
+              ==============================
+              CREATE ACCOUNT
+              ==============================
+              */
+
+              const {
+                data: signupData,
+                error: signupError
+              } =
+                await supabaseClient.auth.signUp({
+                  email: email,
+                  password: password
+                });
+
+              if (signupError) {
+                throw signupError;
+              }
+
+              /*
+              ==============================
+              ACCOUNT CREATED
+              ==============================
+              */
+
+              if (signupData.session) {
+
+                showMessage(
+                  "🎉 VIBRA account created successfully!"
+                );
+
+                showApp();
+
+              } else {
+
+                showMessage(
+                  "✅ Account created! Check your email to verify your account."
+                );
+
+              }
+
               return;
-            }
-
-            // ==================================
-            // CREATE ACCOUNT
-            // ==================================
-
-            const {
-              data: signupData,
-              error: signupError
-            } =
-              await supabaseClient.auth.signUp({
-                email,
-                password
-              });
-
-            if (signupError) {
-              throw signupError;
-            }
-
-            // ==================================
-            // SIGNUP SUCCESS
-            // ==================================
-
-            if (signupData.session) {
-
-              showMessage(
-                "🎉 VIBRA account created successfully!"
-              );
-
-              showApp();
-
-            } else {
-
-              showMessage(
-                "✅ Account created! Please check your email and verify your account."
-              );
 
             }
 
-            return;
-          }
-
-          // Other login errors
-          if (loginError) {
             throw loginError;
+
           }
 
         } catch (error) {
@@ -401,9 +425,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   }
 
-  // ==========================================
-  // NOTIFICATIONS
-  // ==========================================
+  /*
+  ==========================================
+  NOTIFICATION
+  ==========================================
+  */
 
   if (notificationBtn) {
 
@@ -414,13 +440,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         const {
           data: { session }
         } =
-          await supabaseClient.auth
-            .getSession();
+          await supabaseClient.auth.getSession();
 
         if (!session) {
 
           showMessage(
-            "Please login first."
+            "🔐 Please login first."
           );
 
           return;
@@ -428,7 +453,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         showToast(
-          "Notifications will appear here 🔔"
+          "🔔 Notifications will appear here."
         );
 
       }
@@ -436,9 +461,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   }
 
-  // ==========================================
-  // CREATE BUTTON
-  // ==========================================
+  /*
+  ==========================================
+  CREATE POST
+  ==========================================
+  */
 
   if (createBtn) {
 
@@ -449,13 +476,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         const {
           data: { session }
         } =
-          await supabaseClient.auth
-            .getSession();
+          await supabaseClient.auth.getSession();
 
         if (!session) {
 
           showMessage(
-            "Please login first to create a post."
+            "🔐 Please login first to create a post."
           );
 
           return;
@@ -463,7 +489,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         showToast(
-          "Post creator will be added next."
+          "✨ Post creator will be added next."
         );
 
       }
@@ -471,9 +497,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   }
 
-  // ==========================================
-  // NAVIGATION
-  // ==========================================
+  /*
+  ==========================================
+  NAVIGATION
+  ==========================================
+  */
 
   const navItems =
     document.querySelectorAll(".nav-item");
@@ -487,13 +515,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         const {
           data: { session }
         } =
-          await supabaseClient.auth
-            .getSession();
+          await supabaseClient.auth.getSession();
 
         if (!session) {
 
+          showLoginScreen();
+
           showMessage(
-            "Please login first."
+            "🔐 Please login first."
           );
 
           return;
@@ -511,52 +540,44 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   });
 
-  // ==========================================
-  // FRIENDLY ERROR
-  // ==========================================
+  /*
+  ==========================================
+  FRIENDLY ERRORS
+  ==========================================
+  */
 
   function getFriendlyError(error) {
 
     const text =
       String(error || "").toLowerCase();
 
-    if (
-      text.includes("email not confirmed")
-    ) {
+    if (text.includes("email not confirmed")) {
 
-      return "Please verify your email before logging in.";
+      return "📧 Please verify your email before logging in.";
 
     }
 
-    if (
-      text.includes("already registered")
-    ) {
+    if (text.includes("already registered")) {
 
-      return "This email is already registered. Try logging in.";
+      return "This email is already registered. Please login.";
 
     }
 
-    if (
-      text.includes("password")
-    ) {
+    if (text.includes("password")) {
 
       return "Please check your password.";
 
     }
 
-    if (
-      text.includes("rate limit")
-    ) {
+    if (text.includes("rate limit")) {
 
       return "Too many attempts. Please wait and try again.";
 
     }
 
-    if (
-      text.includes("network")
-    ) {
+    if (text.includes("network")) {
 
-      return "Network error. Please check your internet connection.";
+      return "Network error. Check your internet connection.";
 
     }
 
@@ -564,9 +585,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   }
 
-  // ==========================================
-  // MESSAGE
-  // ==========================================
+  /*
+  ==========================================
+  MESSAGE
+  ==========================================
+  */
 
   function showMessage(text) {
 
@@ -583,9 +606,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   }
 
-  // ==========================================
-  // TOAST
-  // ==========================================
+  /*
+  ==========================================
+  TOAST
+  ==========================================
+  */
 
   function showToast(text) {
 
@@ -625,6 +650,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     toast.style.backdropFilter =
       "blur(15px)";
+
+    toast.style.opacity = "0";
+
+    toast.style.transition =
+      "opacity 0.3s ease";
 
     document.body.appendChild(toast);
 
