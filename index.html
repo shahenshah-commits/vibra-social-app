@@ -1,358 +1,846 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+const SUPABASE_URL = "https://xxxqsrsjyhxqwzrimydn.supabase.co";
+const SUPABASE_KEY = "sb_publishable_X5DDa_Sj5UWNVwS3jD77yg_4g2bX3Eb";
 
-  <title>VIBRA — Premium Social Network</title>
+const supabaseClient = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
 
-  <meta
-    name="description"
-    content="VIBRA — Premium futuristic social network."
-  >
+document.addEventListener("DOMContentLoaded", async () => {
 
-  <link rel="stylesheet" href="style.css">
-</head>
+  const splash = document.getElementById("splash");
+  const app = document.getElementById("app");
+  const authSection = document.getElementById("authSection");
+  const homeSection = document.getElementById("homeSection");
 
-<body>
+  const loginForm = document.getElementById("loginForm");
+  const message = document.getElementById("message");
 
-  <!-- SPLASH -->
-  <div id="splash" class="splash">
-    <div class="splash-logo">VIBRA</div>
+  const emailInput = document.getElementById("email");
+  const passwordInput = document.getElementById("password");
+  const togglePassword = document.getElementById("togglePassword");
 
-    <div class="loader">
-      <span></span>
-    </div>
+  const logoutBtn = document.getElementById("logoutBtn");
+  const notificationBtn = document.getElementById("notificationBtn");
+  const createBtn = document.getElementById("createBtn");
+  const createPostBtn = document.getElementById("createPostBtn");
 
-    <p>Entering the VIBRA universe...</p>
-  </div>
+  const welcomeName = document.getElementById("welcomeName");
+  const profileName = document.getElementById("profileName");
+  const profileUsername = document.getElementById("profileUsername");
+  const profileBio = document.getElementById("profileBio");
+  const profileInitial = document.getElementById("profileInitial");
 
+  const postCount = document.getElementById("postCount");
+  const followersCount = document.getElementById("followersCount");
+  const followingCount = document.getElementById("followingCount");
 
-  <!-- APP -->
-  <div id="app" class="app hidden">
 
-    <!-- TOP BAR -->
-    <header class="topbar">
+  /* ==========================================
+     INITIAL STATE
+     ========================================== */
 
-      <div class="brand">
-        <div class="brand-mark">V</div>
-        <span>VIBRA</span>
-      </div>
+  if (app) {
+    app.classList.add("hidden");
+  }
 
-      <div class="top-actions">
 
-        <button
-          class="icon-btn"
-          id="notificationBtn"
-          type="button"
-          aria-label="Notifications"
-        >
-          ♡
-        </button>
+  /* ==========================================
+     PASSWORD SHOW / HIDE
+     ========================================== */
 
-        <button
-          class="logout-btn"
-          id="logoutBtn"
-          type="button"
-        >
-          Logout
-        </button>
+  if (togglePassword && passwordInput) {
 
-      </div>
+    togglePassword.addEventListener("click", () => {
 
-    </header>
+      const hidden = passwordInput.type === "password";
 
+      passwordInput.type = hidden ? "text" : "password";
 
-    <!-- MAIN -->
-    <main class="main">
+      togglePassword.textContent = hidden ? "🙈" : "👁️";
 
-      <!-- LOGIN / ACCOUNT -->
-      <section
-        id="authSection"
-        class="auth-card glass"
-      >
+      togglePassword.setAttribute(
+        "aria-label",
+        hidden ? "Hide password" : "Show password"
+      );
 
-        <div class="auth-heading">
+    });
 
-          <p class="eyebrow">
-            YOUR ACCOUNT
-          </p>
+  }
 
-          <h2>
-            Join VIBRA
-          </h2>
 
-          <p>
-            Login or create your VIBRA account.
-          </p>
+  /* ==========================================
+     MESSAGE
+     ========================================== */
 
-        </div>
+  function showMessage(text) {
 
+    if (!message) return;
 
-        <form id="loginForm">
+    message.textContent = text;
+    message.style.opacity = "1";
 
-          <label>
-            Email
+    clearTimeout(window.vibraMessageTimer);
 
-            <input
-              type="email"
-              id="email"
-              placeholder="Enter your email"
-              autocomplete="email"
-              required
-            >
-          </label>
+    window.vibraMessageTimer = setTimeout(() => {
+      message.style.opacity = "0";
+    }, 5000);
 
+  }
 
-          <label class="password-label">
 
-            Password
+  /* ==========================================
+     SPLASH
+     ========================================== */
 
-            <div class="password-wrapper">
+  function hideSplash() {
 
-              <input
-                type="password"
-                id="password"
-                placeholder="Enter your password"
-                minlength="6"
-                autocomplete="current-password"
-                required
-              >
+    if (!splash) return;
 
-              <button
-                type="button"
-                id="togglePassword"
-                class="password-toggle"
-                aria-label="Show password"
-              >
-                👁️
-              </button>
+    splash.classList.add("hide");
 
-            </div>
+    setTimeout(() => {
+      splash.style.display = "none";
+    }, 600);
 
-          </label>
+  }
 
 
-          <button
-            class="primary-btn full"
-            type="submit"
-          >
-            Continue
-          </button>
+  /* ==========================================
+     SHOW LOGIN
+     ========================================== */
 
-        </form>
+  function showLogin() {
 
+    hideSplash();
 
-        <div
-          id="message"
-          class="message"
-          role="status"
-          aria-live="polite"
-        ></div>
+    if (app) {
+      app.classList.remove("hidden");
+    }
 
-        <p class="security-note">
-          🔒 Secured by Supabase Authentication
-        </p>
+    if (authSection) {
+      authSection.classList.remove("hidden");
+    }
 
-      </section>
+    if (homeSection) {
+      homeSection.classList.add("hidden");
+    }
 
+    if (logoutBtn) {
+      logoutBtn.style.display = "none";
+    }
 
-      <!-- HOME -->
-      <section
-        id="homeSection"
-        class="home-section hidden"
-      >
+  }
 
-        <div class="welcome-card glass">
 
-          <div>
+  /* ==========================================
+     SHOW AUTHENTICATED APP
+     ========================================== */
 
-            <p class="eyebrow">
-              WELCOME BACK
-            </p>
+  async function showAuthenticatedApp(session) {
 
-            <h1>
-              <span id="welcomeName">
-                VIBRA User
-              </span>
-            </h1>
+    if (!session) {
+      showLogin();
+      return;
+    }
 
-            <p class="hero-text">
-              Connect. Create. Share your world.
-            </p>
+    hideSplash();
 
-          </div>
+    if (app) {
+      app.classList.remove("hidden");
+    }
 
-          <div class="vibra-orb"></div>
+    if (authSection) {
+      authSection.classList.add("hidden");
+    }
 
-        </div>
+    if (homeSection) {
+      homeSection.classList.remove("hidden");
+    }
 
+    if (logoutBtn) {
+      logoutBtn.style.display = "block";
+    }
 
-        <!-- PROFILE CARD -->
-        <section class="profile-card glass">
+    await loadUserProfile(session.user);
 
-          <div class="profile-avatar">
-            <span id="profileInitial">
-              V
-            </span>
-          </div>
+  }
 
-          <div class="profile-info">
 
-            <h2 id="profileName">
-              VIBRA User
-            </h2>
+  /* ==========================================
+     LOAD REAL USER PROFILE
+     ========================================== */
 
-            <p id="profileUsername">
-              @username
-            </p>
+  async function loadUserProfile(user) {
 
-            <p id="profileBio">
-              Welcome to VIBRA.
-            </p>
+    if (!user) return;
 
-          </div>
+    const userId = user.id;
 
-        </section>
+    let profile = null;
 
+    try {
 
-        <!-- STATS -->
-        <section class="stats-grid">
+      const result = await supabaseClient
+        .from("users")
+        .select("*")
+        .eq("id", userId)
+        .maybeSingle();
 
-          <div class="stat-card glass">
-            <strong id="postCount">0</strong>
-            <span>Posts</span>
-          </div>
+      if (result.error) {
+        console.error("Profile error:", result.error);
+      }
 
-          <div class="stat-card glass">
-            <strong id="followersCount">0</strong>
-            <span>Followers</span>
-          </div>
+      profile = result.data;
 
-          <div class="stat-card glass">
-            <strong id="followingCount">0</strong>
-            <span>Following</span>
-          </div>
+    } catch (error) {
 
-        </section>
+      console.error(
+        "Could not load profile:",
+        error
+      );
 
+    }
 
-        <!-- FEED -->
-        <section class="section">
 
-          <div class="section-title">
+    /*
+    ==========================================
+    FALLBACK TO AUTH DATA
 
-            <h2>
-              Your VIBRA Feed
-            </h2>
+    This does NOT create fake database data.
+    ==========================================
+    */
 
-            <span>
-              ✦
-            </span>
+    const metadata = user.user_metadata || {};
 
-          </div>
+    const name =
+      profile?.full_name ||
+      profile?.name ||
+      metadata.full_name ||
+      metadata.name ||
+      user.email?.split("@")[0] ||
+      "VIBRA User";
 
+    const username =
+      profile?.username ||
+      metadata.username ||
+      "";
 
-          <div
-            id="feedContainer"
-            class="feed-container"
-          >
+    const bio =
+      profile?.bio ||
+      metadata.bio ||
+      "Welcome to VIBRA.";
 
-            <article class="empty-feed glass">
+    const posts =
+      Number(profile?.post_count || profile?.posts_count || 0);
 
-              <div class="empty-icon">
-                ✦
-              </div>
+    const followers =
+      Number(profile?.followers_count || 0);
 
-              <h3>
-                Your feed is ready
-              </h3>
+    const following =
+      Number(profile?.following_count || 0);
 
-              <p>
-                Posts from the VIBRA community will appear here.
-              </p>
 
-              <button
-                id="createPostBtn"
-                class="primary-btn"
-                type="button"
-              >
-                Create your first post
-              </button>
+    /*
+    ==========================================
+    UPDATE UI
+    ==========================================
+    */
 
-            </article>
+    if (welcomeName) {
+      welcomeName.textContent = name;
+    }
 
-          </div>
+    if (profileName) {
+      profileName.textContent = name;
+    }
 
-        </section>
+    if (profileUsername) {
 
-      </section>
+      profileUsername.textContent =
+        username
+          ? `@${username}`
+          : "@vibra_user";
 
-    </main>
+    }
 
+    if (profileBio) {
+      profileBio.textContent = bio;
+    }
 
-    <!-- BOTTOM NAV -->
-    <nav class="bottom-nav glass">
+    if (profileInitial) {
 
-      <button
-        class="nav-item active"
-        data-page="home"
-        type="button"
-      >
-        <span>⌂</span>
-        <small>Home</small>
-      </button>
+      profileInitial.textContent =
+        name.charAt(0).toUpperCase();
 
+    }
 
-      <button
-        class="nav-item"
-        data-page="explore"
-        type="button"
-      >
-        <span>⌕</span>
-        <small>Explore</small>
-      </button>
+    if (postCount) {
+      postCount.textContent = posts;
+    }
 
+    if (followersCount) {
+      followersCount.textContent = followers;
+    }
 
-      <button
-        class="create-btn"
-        id="createBtn"
-        type="button"
-        aria-label="Create post"
-      >
-        +
-      </button>
+    if (followingCount) {
+      followingCount.textContent = following;
 
+    }
 
-      <button
-        class="nav-item"
-        data-page="reels"
-        type="button"
-      >
-        <span>▶</span>
-        <small>Reels</small>
-      </button>
+  }
 
 
-      <button
-        class="nav-item"
-        data-page="profile"
-        type="button"
-      >
-        <span>◯</span>
-        <small>Profile</small>
-      </button>
+  /* ==========================================
+     CHECK SESSION
+     ========================================== */
 
-    </nav>
+  const {
+    data: { session },
+    error: sessionError
+  } = await supabaseClient.auth.getSession();
 
-  </div>
+  if (sessionError) {
+    console.error(
+      "Session check error:",
+      sessionError
+    );
+  }
 
 
-  <!-- SUPABASE FIRST -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  if (session) {
 
-  <!-- VIBRA APP SECOND -->
-  <script src="app.js"></script>
+    await showAuthenticatedApp(session);
 
-</body>
-</html>
+  } else {
+
+    showLogin();
+
+  }
+
+
+  /* ==========================================
+     AUTH STATE CHANGE
+     ========================================== */
+
+  supabaseClient.auth.onAuthStateChange(
+    async (event, session) => {
+
+      if (event === "SIGNED_IN" && session) {
+
+        await showAuthenticatedApp(session);
+
+        showMessage(
+          "🎉 Welcome to VIBRA!"
+        );
+
+      }
+
+
+      if (event === "SIGNED_OUT") {
+
+        if (app) {
+          app.classList.add("hidden");
+        }
+
+        showLogin();
+
+        showMessage(
+          "You have been logged out."
+        );
+
+      }
+
+    }
+  );
+
+
+  /* ==========================================
+     LOGIN / SIGNUP
+     ========================================== */
+
+  if (loginForm) {
+
+    loginForm.addEventListener(
+      "submit",
+      async (event) => {
+
+        event.preventDefault();
+
+        const email =
+          emailInput?.value.trim() || "";
+
+        const password =
+          passwordInput?.value || "";
+
+
+        if (!email || !password) {
+
+          showMessage(
+            "Please enter your email and password."
+          );
+
+          return;
+
+        }
+
+
+        if (password.length < 6) {
+
+          showMessage(
+            "Password must contain at least 6 characters."
+          );
+
+          return;
+
+        }
+
+
+        const button =
+          loginForm.querySelector(
+            "button[type='submit']"
+          );
+
+        if (button) {
+
+          button.disabled = true;
+          button.textContent = "Connecting...";
+
+        }
+
+
+        try {
+
+          /*
+          ======================================
+             LOGIN
+          ======================================
+          */
+
+          const {
+            data,
+            error
+          } = await supabaseClient.auth.signInWithPassword({
+            email,
+            password
+          });
+
+
+          if (!error && data.session) {
+
+            await showAuthenticatedApp(
+              data.session
+            );
+
+            showMessage(
+              "🎉 Login successful!"
+            );
+
+            return;
+
+          }
+
+
+          /*
+          ======================================
+             LOGIN FAILED
+          ======================================
+          */
+
+          if (error) {
+
+            const text =
+              error.message.toLowerCase();
+
+
+            /*
+            ------------------------------------
+            ACCOUNT NOT FOUND
+            ------------------------------------
+            */
+
+            if (
+              text.includes("invalid login") ||
+              text.includes("invalid credentials")
+            ) {
+
+              const create =
+                confirm(
+                  "This email/password could not be used to login.\n\nDo you want to create a new VIBRA account?"
+                );
+
+
+              if (!create) {
+                return;
+              }
+
+
+              /*
+              ==================================
+              SIGN UP
+              ==================================
+              */
+
+              const {
+                data: signupData,
+                error: signupError
+              } =
+                await supabaseClient.auth.signUp({
+                  email,
+                  password
+                });
+
+
+              if (signupError) {
+                throw signupError;
+              }
+
+
+              if (signupData.session) {
+
+                await showAuthenticatedApp(
+                  signupData.session
+                );
+
+                showMessage(
+                  "🎉 VIBRA account created!"
+                );
+
+              } else {
+
+                showMessage(
+                  "📧 Account created. Please verify your email."
+                );
+
+              }
+
+              return;
+
+            }
+
+
+            throw error;
+
+          }
+
+        } catch (error) {
+
+          console.error(
+            "VIBRA authentication error:",
+            error
+          );
+
+          showMessage(
+            friendlyError(error?.message)
+          );
+
+        } finally {
+
+          if (button) {
+
+            button.disabled = false;
+            button.textContent = "Continue";
+
+          }
+
+        }
+
+      }
+    );
+
+  }
+
+
+  /* ==========================================
+     LOGOUT
+     ========================================== */
+
+  if (logoutBtn) {
+
+    logoutBtn.addEventListener(
+      "click",
+      async () => {
+
+        logoutBtn.disabled = true;
+        logoutBtn.textContent = "Logging out...";
+
+        const {
+          error
+        } = await supabaseClient.auth.signOut();
+
+        if (error) {
+
+          console.error(
+            "Logout error:",
+            error
+          );
+
+          showMessage(
+            "Could not logout. Please try again."
+          );
+
+          logoutBtn.disabled = false;
+          logoutBtn.textContent = "Logout";
+
+          return;
+
+        }
+
+        logoutBtn.disabled = false;
+        logoutBtn.textContent = "Logout";
+
+      }
+    );
+
+  }
+
+
+  /* ==========================================
+     CREATE POST
+     ========================================== */
+
+  async function requireLogin() {
+
+    const {
+      data: { session }
+    } = await supabaseClient.auth.getSession();
+
+    if (!session) {
+
+      showLogin();
+
+      showMessage(
+        "🔐 Please login first."
+      );
+
+      return false;
+
+    }
+
+    return true;
+
+  }
+
+
+  if (createBtn) {
+
+    createBtn.addEventListener(
+      "click",
+      async () => {
+
+        if (!await requireLogin()) {
+          return;
+        }
+
+        showToast(
+          "✨ Post creator will be added next."
+        );
+
+      }
+    );
+
+  }
+
+
+  if (createPostBtn) {
+
+    createPostBtn.addEventListener(
+      "click",
+      async () => {
+
+        if (!await requireLogin()) {
+          return;
+        }
+
+        showToast(
+          "✨ Post creator will be added next."
+        );
+
+      }
+    );
+
+  }
+
+
+  /* ==========================================
+     NOTIFICATIONS
+     ========================================== */
+
+  if (notificationBtn) {
+
+    notificationBtn.addEventListener(
+      "click",
+      async () => {
+
+        if (!await requireLogin()) {
+          return;
+        }
+
+        showToast(
+          "🔔 Notifications will appear here."
+        );
+
+      }
+    );
+
+  }
+
+
+  /* ==========================================
+     NAVIGATION
+     ========================================== */
+
+  const navItems =
+    document.querySelectorAll(".nav-item");
+
+  navItems.forEach((item) => {
+
+    item.addEventListener(
+      "click",
+      async () => {
+
+        if (!await requireLogin()) {
+          return;
+        }
+
+        navItems.forEach((nav) => {
+          nav.classList.remove("active");
+        });
+
+        item.classList.add("active");
+
+        const page =
+          item.dataset.page;
+
+        if (page === "explore") {
+
+          showToast(
+            "🔎 Explore is coming next."
+          );
+
+        }
+
+        if (page === "reels") {
+
+          showToast(
+            "▶ Reels is coming next."
+          );
+
+        }
+
+        if (page === "profile") {
+
+          showToast(
+            "◯ Profile is coming next."
+          );
+
+        }
+
+      }
+    );
+
+  });
+
+
+  /* ==========================================
+     FRIENDLY ERROR
+     ========================================== */
+
+  function friendlyError(error) {
+
+    const text =
+      String(error || "").toLowerCase();
+
+
+    if (
+      text.includes("email not confirmed")
+    ) {
+      return "📧 Please verify your email first.";
+    }
+
+
+    if (
+      text.includes("already registered")
+    ) {
+      return "This email is already registered. Please login.";
+    }
+
+
+    if (
+      text.includes("invalid login") ||
+      text.includes("invalid credentials")
+    ) {
+      return "Email or password is incorrect.";
+    }
+
+
+    if (
+      text.includes("rate limit")
+    ) {
+      return "Too many attempts. Please wait and try again.";
+    }
+
+
+    if (
+      text.includes("network")
+    ) {
+      return "Network error. Check your internet connection.";
+    }
+
+
+    return "Something went wrong. Please try again.";
+
+  }
+
+
+  /* ==========================================
+     TOAST
+     ========================================== */
+
+  function showToast(text) {
+
+    const toast =
+      document.createElement("div");
+
+    toast.textContent = text;
+
+    Object.assign(
+      toast.style,
+      {
+        position: "fixed",
+        left: "50%",
+        bottom: "95px",
+        transform: "translateX(-50%)",
+        zIndex: "99999",
+        padding: "13px 20px",
+        borderRadius: "15px",
+        background: "rgba(12,15,25,0.96)",
+        border: "1px solid rgba(0,240,255,0.3)",
+        color: "#ffffff",
+        fontSize: "13px",
+        fontWeight: "600",
+        backdropFilter: "blur(18px)",
+        opacity: "0",
+        transition: "all .3s ease"
+      }
+    );
+
+    document.body.appendChild(toast);
+
+    requestAnimationFrame(() => {
+      toast.style.opacity = "1";
+    });
+
+    setTimeout(() => {
+
+      toast.style.opacity = "0";
+
+      setTimeout(() => {
+        toast.remove();
+      }, 350);
+
+    }, 2500);
+
+  }
+
+});
