@@ -8,7 +8,7 @@
 
   <meta
     name="description"
-    content="VIBRA — a premium futuristic social network."
+    content="VIBRA — Premium futuristic social network."
   >
 
   <link rel="stylesheet" href="style.css">
@@ -16,7 +16,7 @@
 
 <body>
 
-  <!-- SPLASH SCREEN -->
+  <!-- SPLASH -->
   <div id="splash" class="splash">
     <div class="splash-logo">VIBRA</div>
 
@@ -28,7 +28,7 @@
   </div>
 
 
-  <!-- MAIN APPLICATION -->
+  <!-- APP -->
   <div id="app" class="app hidden">
 
     <!-- TOP BAR -->
@@ -39,14 +39,26 @@
         <span>VIBRA</span>
       </div>
 
-      <button
-        class="icon-btn"
-        id="notificationBtn"
-        type="button"
-        aria-label="Notifications"
-      >
-        ♡
-      </button>
+      <div class="top-actions">
+
+        <button
+          class="icon-btn"
+          id="notificationBtn"
+          type="button"
+          aria-label="Notifications"
+        >
+          ♡
+        </button>
+
+        <button
+          class="logout-btn"
+          id="logoutBtn"
+          type="button"
+        >
+          Logout
+        </button>
+
+      </div>
 
     </header>
 
@@ -54,79 +66,7 @@
     <!-- MAIN -->
     <main class="main">
 
-      <!-- WELCOME -->
-      <section class="hero glass">
-
-        <div>
-
-          <p class="eyebrow">
-            WELCOME TO
-          </p>
-
-          <h1>
-            VIBRA
-          </h1>
-
-          <p class="hero-text">
-            Connect. Create. Share your world.
-          </p>
-
-          <button
-            class="primary-btn"
-            id="startBtn"
-            type="button"
-          >
-            Enter VIBRA
-          </button>
-
-        </div>
-
-        <div class="orb orb-one"></div>
-        <div class="orb orb-two"></div>
-
-      </section>
-
-
-      <!-- FEATURES -->
-      <section class="section">
-
-        <div class="section-title">
-          <h2>Explore VIBRA</h2>
-          <span>∞</span>
-        </div>
-
-        <div class="feature-grid">
-
-          <article class="feature-card glass">
-            <div class="feature-icon">✦</div>
-            <h3>Feed</h3>
-            <p>Discover posts from the VIBRA community.</p>
-          </article>
-
-          <article class="feature-card glass">
-            <div class="feature-icon">▶</div>
-            <h3>Reels</h3>
-            <p>Watch and share short-form videos.</p>
-          </article>
-
-          <article class="feature-card glass">
-            <div class="feature-icon">◉</div>
-            <h3>Stories</h3>
-            <p>Share moments that disappear after 24 hours.</p>
-          </article>
-
-          <article class="feature-card glass">
-            <div class="feature-icon">⌁</div>
-            <h3>Messages</h3>
-            <p>Connect privately with your friends.</p>
-          </article>
-
-        </div>
-
-      </section>
-
-
-      <!-- AUTHENTICATION -->
+      <!-- LOGIN / ACCOUNT -->
       <section
         id="authSection"
         class="auth-card glass"
@@ -143,7 +83,7 @@
           </h2>
 
           <p>
-            Create your account and enter the community.
+            Login or create your VIBRA account.
           </p>
 
         </div>
@@ -151,7 +91,6 @@
 
         <form id="loginForm">
 
-          <!-- EMAIL -->
           <label>
             Email
 
@@ -162,11 +101,9 @@
               autocomplete="email"
               required
             >
-
           </label>
 
 
-          <!-- PASSWORD -->
           <label class="password-label">
 
             Password
@@ -196,7 +133,6 @@
           </label>
 
 
-          <!-- LOGIN -->
           <button
             class="primary-btn full"
             type="submit"
@@ -214,10 +150,141 @@
           aria-live="polite"
         ></div>
 
-
         <p class="security-note">
-          🔒 Your account uses secure Supabase authentication.
+          🔒 Secured by Supabase Authentication
         </p>
+
+      </section>
+
+
+      <!-- HOME -->
+      <section
+        id="homeSection"
+        class="home-section hidden"
+      >
+
+        <div class="welcome-card glass">
+
+          <div>
+
+            <p class="eyebrow">
+              WELCOME BACK
+            </p>
+
+            <h1>
+              <span id="welcomeName">
+                VIBRA User
+              </span>
+            </h1>
+
+            <p class="hero-text">
+              Connect. Create. Share your world.
+            </p>
+
+          </div>
+
+          <div class="vibra-orb"></div>
+
+        </div>
+
+
+        <!-- PROFILE CARD -->
+        <section class="profile-card glass">
+
+          <div class="profile-avatar">
+            <span id="profileInitial">
+              V
+            </span>
+          </div>
+
+          <div class="profile-info">
+
+            <h2 id="profileName">
+              VIBRA User
+            </h2>
+
+            <p id="profileUsername">
+              @username
+            </p>
+
+            <p id="profileBio">
+              Welcome to VIBRA.
+            </p>
+
+          </div>
+
+        </section>
+
+
+        <!-- STATS -->
+        <section class="stats-grid">
+
+          <div class="stat-card glass">
+            <strong id="postCount">0</strong>
+            <span>Posts</span>
+          </div>
+
+          <div class="stat-card glass">
+            <strong id="followersCount">0</strong>
+            <span>Followers</span>
+          </div>
+
+          <div class="stat-card glass">
+            <strong id="followingCount">0</strong>
+            <span>Following</span>
+          </div>
+
+        </section>
+
+
+        <!-- FEED -->
+        <section class="section">
+
+          <div class="section-title">
+
+            <h2>
+              Your VIBRA Feed
+            </h2>
+
+            <span>
+              ✦
+            </span>
+
+          </div>
+
+
+          <div
+            id="feedContainer"
+            class="feed-container"
+          >
+
+            <article class="empty-feed glass">
+
+              <div class="empty-icon">
+                ✦
+              </div>
+
+              <h3>
+                Your feed is ready
+              </h3>
+
+              <p>
+                Posts from the VIBRA community will appear here.
+              </p>
+
+              <button
+                id="createPostBtn"
+                class="primary-btn"
+                type="button"
+              >
+                Create your first post
+              </button>
+
+            </article>
+
+          </div>
+
+        </section>
 
       </section>
 
@@ -229,6 +296,7 @@
 
       <button
         class="nav-item active"
+        data-page="home"
         type="button"
       >
         <span>⌂</span>
@@ -238,6 +306,7 @@
 
       <button
         class="nav-item"
+        data-page="explore"
         type="button"
       >
         <span>⌕</span>
@@ -257,6 +326,7 @@
 
       <button
         class="nav-item"
+        data-page="reels"
         type="button"
       >
         <span>▶</span>
@@ -266,6 +336,7 @@
 
       <button
         class="nav-item"
+        data-page="profile"
         type="button"
       >
         <span>◯</span>
@@ -277,14 +348,10 @@
   </div>
 
 
-  <!-- ==========================================
-       SUPABASE
-       पहले Supabase library
-       फिर app.js
-       ========================================== -->
-
+  <!-- SUPABASE FIRST -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+  <!-- VIBRA APP SECOND -->
   <script src="app.js"></script>
 
 </body>
