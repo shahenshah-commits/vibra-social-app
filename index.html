@@ -16,10 +16,7 @@
 
 <body>
 
-  <!-- ==========================================
-       SPLASH SCREEN
-       ========================================== -->
-
+  <!-- SPLASH SCREEN -->
   <div id="splash" class="splash">
     <div class="splash-logo">VIBRA</div>
 
@@ -31,10 +28,7 @@
   </div>
 
 
-  <!-- ==========================================
-       MAIN APPLICATION
-       ========================================== -->
-
+  <!-- MAIN APPLICATION -->
   <div id="app" class="app hidden">
 
     <!-- TOP BAR -->
@@ -57,15 +51,10 @@
     </header>
 
 
-    <!-- ==========================================
-         MAIN CONTENT
-         ========================================== -->
-
+    <!-- MAIN -->
     <main class="main">
 
-
-      <!-- WELCOME SECTION -->
-
+      <!-- WELCOME -->
       <section class="hero glass">
 
         <div>
@@ -98,118 +87,50 @@
       </section>
 
 
-      <!-- ==========================================
-           FEATURES
-           ========================================== -->
-
+      <!-- FEATURES -->
       <section class="section">
 
         <div class="section-title">
-
-          <h2>
-            Explore VIBRA
-          </h2>
-
-          <span>
-            ∞
-          </span>
-
+          <h2>Explore VIBRA</h2>
+          <span>∞</span>
         </div>
-
 
         <div class="feature-grid">
 
-
-          <!-- FEED -->
-
           <article class="feature-card glass">
-
-            <div class="feature-icon">
-              ✦
-            </div>
-
-            <h3>
-              Feed
-            </h3>
-
-            <p>
-              Discover posts from the VIBRA community.
-            </p>
-
+            <div class="feature-icon">✦</div>
+            <h3>Feed</h3>
+            <p>Discover posts from the VIBRA community.</p>
           </article>
 
-
-          <!-- REELS -->
-
           <article class="feature-card glass">
-
-            <div class="feature-icon">
-              ▶
-            </div>
-
-            <h3>
-              Reels
-            </h3>
-
-            <p>
-              Watch and share short-form videos.
-            </p>
-
+            <div class="feature-icon">▶</div>
+            <h3>Reels</h3>
+            <p>Watch and share short-form videos.</p>
           </article>
 
-
-          <!-- STORIES -->
-
           <article class="feature-card glass">
-
-            <div class="feature-icon">
-              ◉
-            </div>
-
-            <h3>
-              Stories
-            </h3>
-
-            <p>
-              Share moments that disappear after 24 hours.
-            </p>
-
+            <div class="feature-icon">◉</div>
+            <h3>Stories</h3>
+            <p>Share moments that disappear after 24 hours.</p>
           </article>
 
-
-          <!-- MESSAGES -->
-
           <article class="feature-card glass">
-
-            <div class="feature-icon">
-              ⌁
-            </div>
-
-            <h3>
-              Messages
-            </h3>
-
-            <p>
-              Connect privately with your friends.
-            </p>
-
+            <div class="feature-icon">⌁</div>
+            <h3>Messages</h3>
+            <p>Connect privately with your friends.</p>
           </article>
-
 
         </div>
 
       </section>
 
 
-      <!-- ==========================================
-           AUTHENTICATION
-           ========================================== -->
-
+      <!-- AUTHENTICATION -->
       <section
         id="authSection"
         class="auth-card glass"
       >
-
 
         <div class="auth-heading">
 
@@ -228,13 +149,9 @@
         </div>
 
 
-        <!-- LOGIN FORM -->
-
         <form id="loginForm">
 
-
           <!-- EMAIL -->
-
           <label>
             Email
 
@@ -250,7 +167,6 @@
 
 
           <!-- PASSWORD -->
-
           <label class="password-label">
 
             Password
@@ -280,8 +196,7 @@
           </label>
 
 
-          <!-- LOGIN BUTTON -->
-
+          <!-- LOGIN -->
           <button
             class="primary-btn full"
             type="submit"
@@ -289,11 +204,8 @@
             Continue
           </button>
 
-
         </form>
 
-
-        <!-- AUTH MESSAGE -->
 
         <div
           id="message"
@@ -303,63 +215,35 @@
         ></div>
 
 
-        <!-- SECURITY MESSAGE -->
-
         <p class="security-note">
           🔒 Your account uses secure Supabase authentication.
         </p>
 
-
       </section>
-
 
     </main>
 
 
-    <!-- ==========================================
-         MOBILE BOTTOM NAVIGATION
-         ========================================== -->
-
+    <!-- BOTTOM NAV -->
     <nav class="bottom-nav glass">
-
-
-      <!-- HOME -->
 
       <button
         class="nav-item active"
         type="button"
       >
-
-        <span>
-          ⌂
-        </span>
-
-        <small>
-          Home
-        </small>
-
+        <span>⌂</span>
+        <small>Home</small>
       </button>
 
-
-      <!-- EXPLORE -->
 
       <button
         class="nav-item"
         type="button"
       >
-
-        <span>
-          ⌕
-        </span>
-
-        <small>
-          Explore
-        </small>
-
+        <span>⌕</span>
+        <small>Explore</small>
       </button>
 
-
-      <!-- CREATE -->
 
       <button
         class="create-btn"
@@ -371,52 +255,32 @@
       </button>
 
 
-      <!-- REELS -->
+      <button
+        class="nav-item"
+        type="button"
+      >
+        <span>▶</span>
+        <small>Reels</small>
+      </button>
+
 
       <button
         class="nav-item"
         type="button"
       >
-
-        <span>
-          ▶
-        </span>
-
-        <small>
-          Reels
-        </small>
-
+        <span>◯</span>
+        <small>Profile</small>
       </button>
-
-
-      <!-- PROFILE -->
-
-      <button
-        class="nav-item"
-        type="button"
-      >
-
-        <span>
-          ◯
-        </span>
-
-        <small>
-          Profile
-        </small>
-
-      </button>
-
 
     </nav>
-
 
   </div>
 
 
   <!-- ==========================================
        SUPABASE
-       IMPORTANT: Supabase library first,
-       app.js second.
+       पहले Supabase library
+       फिर app.js
        ========================================== -->
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
