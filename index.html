@@ -16,177 +16,412 @@
 
 <body>
 
-  <!-- Splash Screen -->
+  <!-- ==========================================
+       SPLASH SCREEN
+       ========================================== -->
+
   <div id="splash" class="splash">
     <div class="splash-logo">VIBRA</div>
+
     <div class="loader">
       <span></span>
     </div>
+
     <p>Entering the VIBRA universe...</p>
   </div>
 
-  <!-- Application -->
+
+  <!-- ==========================================
+       MAIN APPLICATION
+       ========================================== -->
+
   <div id="app" class="app hidden">
 
-    <!-- Top Bar -->
+    <!-- TOP BAR -->
     <header class="topbar">
+
       <div class="brand">
         <div class="brand-mark">V</div>
         <span>VIBRA</span>
       </div>
 
-      <button class="icon-btn" id="notificationBtn" aria-label="Notifications">
+      <button
+        class="icon-btn"
+        id="notificationBtn"
+        type="button"
+        aria-label="Notifications"
+      >
         ♡
       </button>
+
     </header>
 
-    <!-- Main Content -->
+
+    <!-- ==========================================
+         MAIN CONTENT
+         ========================================== -->
+
     <main class="main">
 
-      <!-- Welcome -->
+
+      <!-- WELCOME SECTION -->
+
       <section class="hero glass">
+
         <div>
-          <p class="eyebrow">WELCOME TO</p>
-          <h1>VIBRA</h1>
+
+          <p class="eyebrow">
+            WELCOME TO
+          </p>
+
+          <h1>
+            VIBRA
+          </h1>
+
           <p class="hero-text">
             Connect. Create. Share your world.
           </p>
 
-          <button class="primary-btn" id="startBtn">
+          <button
+            class="primary-btn"
+            id="startBtn"
+            type="button"
+          >
             Enter VIBRA
           </button>
+
         </div>
 
         <div class="orb orb-one"></div>
         <div class="orb orb-two"></div>
+
       </section>
 
-      <!-- Feature Cards -->
+
+      <!-- ==========================================
+           FEATURES
+           ========================================== -->
+
       <section class="section">
+
         <div class="section-title">
-          <h2>Explore VIBRA</h2>
-          <span>∞</span>
+
+          <h2>
+            Explore VIBRA
+          </h2>
+
+          <span>
+            ∞
+          </span>
+
         </div>
+
 
         <div class="feature-grid">
 
-          <article class="feature-card glass">
-            <div class="feature-icon">✦</div>
-            <h3>Feed</h3>
-            <p>Discover posts from the VIBRA community.</p>
-          </article>
+
+          <!-- FEED -->
 
           <article class="feature-card glass">
-            <div class="feature-icon">▶</div>
-            <h3>Reels</h3>
-            <p>Watch and share short-form videos.</p>
+
+            <div class="feature-icon">
+              ✦
+            </div>
+
+            <h3>
+              Feed
+            </h3>
+
+            <p>
+              Discover posts from the VIBRA community.
+            </p>
+
           </article>
 
-          <article class="feature-card glass">
-            <div class="feature-icon">◉</div>
-            <h3>Stories</h3>
-            <p>Share moments that disappear after 24 hours.</p>
-          </article>
+
+          <!-- REELS -->
 
           <article class="feature-card glass">
-            <div class="feature-icon">⌁</div>
-            <h3>Messages</h3>
-            <p>Connect privately with your friends.</p>
+
+            <div class="feature-icon">
+              ▶
+            </div>
+
+            <h3>
+              Reels
+            </h3>
+
+            <p>
+              Watch and share short-form videos.
+            </p>
+
           </article>
+
+
+          <!-- STORIES -->
+
+          <article class="feature-card glass">
+
+            <div class="feature-icon">
+              ◉
+            </div>
+
+            <h3>
+              Stories
+            </h3>
+
+            <p>
+              Share moments that disappear after 24 hours.
+            </p>
+
+          </article>
+
+
+          <!-- MESSAGES -->
+
+          <article class="feature-card glass">
+
+            <div class="feature-icon">
+              ⌁
+            </div>
+
+            <h3>
+              Messages
+            </h3>
+
+            <p>
+              Connect privately with your friends.
+            </p>
+
+          </article>
+
 
         </div>
+
       </section>
 
-      <!-- Login Area -->
-      <section id="authSection" class="auth-card glass">
+
+      <!-- ==========================================
+           AUTHENTICATION
+           ========================================== -->
+
+      <section
+        id="authSection"
+        class="auth-card glass"
+      >
+
 
         <div class="auth-heading">
-          <p class="eyebrow">YOUR ACCOUNT</p>
-          <h2>Join VIBRA</h2>
-          <p>Create your account and enter the community.</p>
+
+          <p class="eyebrow">
+            YOUR ACCOUNT
+          </p>
+
+          <h2>
+            Join VIBRA
+          </h2>
+
+          <p>
+            Create your account and enter the community.
+          </p>
+
         </div>
+
+
+        <!-- LOGIN FORM -->
 
         <form id="loginForm">
 
+
+          <!-- EMAIL -->
+
           <label>
             Email
+
             <input
               type="email"
               id="email"
               placeholder="Enter your email"
+              autocomplete="email"
               required
             >
-         <label class="password-label">
-  Password
 
-  <div class="password-wrapper">
-    <input
-      type="password"
-      id="password"
-      placeholder="Enter your password"
-      minlength="6"
-      required
-    >
+          </label>
 
-    <button
-      type="button"
-      id="togglePassword"
-      class="password-toggle"
-      aria-label="Show password"
-    >
-      👁️
-    </button>
-  </div>
-</label>
 
-          <button class="primary-btn full" type="submit">
+          <!-- PASSWORD -->
+
+          <label class="password-label">
+
+            Password
+
+            <div class="password-wrapper">
+
+              <input
+                type="password"
+                id="password"
+                placeholder="Enter your password"
+                minlength="6"
+                autocomplete="current-password"
+                required
+              >
+
+              <button
+                type="button"
+                id="togglePassword"
+                class="password-toggle"
+                aria-label="Show password"
+              >
+                👁️
+              </button>
+
+            </div>
+
+          </label>
+
+
+          <!-- LOGIN BUTTON -->
+
+          <button
+            class="primary-btn full"
+            type="submit"
+          >
             Continue
           </button>
 
+
         </form>
 
-        <div id="message" class="message"></div>
+
+        <!-- AUTH MESSAGE -->
+
+        <div
+          id="message"
+          class="message"
+          role="status"
+          aria-live="polite"
+        ></div>
+
+
+        <!-- SECURITY MESSAGE -->
 
         <p class="security-note">
-          🔒 Your account will use secure authentication.
+          🔒 Your account uses secure Supabase authentication.
         </p>
+
 
       </section>
 
+
     </main>
 
-    <!-- Bottom Navigation -->
+
+    <!-- ==========================================
+         MOBILE BOTTOM NAVIGATION
+         ========================================== -->
+
     <nav class="bottom-nav glass">
 
-      <button class="nav-item active">
-        <span>⌂</span>
-        <small>Home</small>
+
+      <!-- HOME -->
+
+      <button
+        class="nav-item active"
+        type="button"
+      >
+
+        <span>
+          ⌂
+        </span>
+
+        <small>
+          Home
+        </small>
+
       </button>
 
-      <button class="nav-item">
-        <span>⌕</span>
-        <small>Explore</small>
+
+      <!-- EXPLORE -->
+
+      <button
+        class="nav-item"
+        type="button"
+      >
+
+        <span>
+          ⌕
+        </span>
+
+        <small>
+          Explore
+        </small>
+
       </button>
 
-      <button class="create-btn" id="createBtn">
+
+      <!-- CREATE -->
+
+      <button
+        class="create-btn"
+        id="createBtn"
+        type="button"
+        aria-label="Create post"
+      >
         +
       </button>
 
-      <button class="nav-item">
-        <span>▶</span>
-        <small>Reels</small>
+
+      <!-- REELS -->
+
+      <button
+        class="nav-item"
+        type="button"
+      >
+
+        <span>
+          ▶
+        </span>
+
+        <small>
+          Reels
+        </small>
+
       </button>
 
-      <button class="nav-item">
-        <span>◯</span>
-        <small>Profile</small>
+
+      <!-- PROFILE -->
+
+      <button
+        class="nav-item"
+        type="button"
+      >
+
+        <span>
+          ◯
+        </span>
+
+        <small>
+          Profile
+        </small>
+
       </button>
+
 
     </nav>
 
+
   </div>
-  
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="app.js"></script>
+
+
+  <!-- ==========================================
+       SUPABASE
+       IMPORTANT: Supabase library first,
+       app.js second.
+       ========================================== -->
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script src="app.js"></script>
+
 </body>
 </html>
