@@ -1,3 +1,11 @@
+const SUPABASE_URL = "https://xxxqsrsjyhxqwzrimydn.supabase.co";
+const SUPABASE_KEY = "YOUR_PUBLISHABLE_KEY";
+
+const supabaseClient = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
 document.addEventListener("DOMContentLoaded", () => {
 
   const splash = document.getElementById("splash");
