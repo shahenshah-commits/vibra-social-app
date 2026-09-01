@@ -1,28 +1,43 @@
+<!-- ==========================================
+     VIBRA AUTHENTICATION
+     ========================================== -->
+
 <section id="authSection" class="auth-card glass">
 
   <div class="auth-heading">
     <p class="eyebrow">YOUR ACCOUNT</p>
 
-    <h2>Join VIBRA</h2>
+    <h2>Welcome to VIBRA</h2>
 
-    <p>Create your account and enter the community.</p>
+    <p>
+      Login to continue, or create a new account.
+    </p>
   </div>
 
-  <form id="loginForm">
+  <form id="loginForm" autocomplete="on">
 
-    <label>
+    <!-- EMAIL -->
+
+    <label for="email">
       Email
 
       <input
         type="email"
         id="email"
+        name="email"
         placeholder="Enter your email"
         autocomplete="email"
         required
       >
     </label>
 
-    <label class="password-label">
+
+    <!-- PASSWORD -->
+
+    <label
+      class="password-label"
+      for="password"
+    >
       Password
 
       <div class="password-wrapper">
@@ -30,6 +45,7 @@
         <input
           type="password"
           id="password"
+          name="password"
           placeholder="Enter your password"
           minlength="6"
           autocomplete="current-password"
@@ -41,6 +57,7 @@
           id="togglePassword"
           class="password-toggle"
           aria-label="Show password"
+          title="Show password"
         >
           👁️
         </button>
@@ -48,14 +65,32 @@
       </div>
     </label>
 
+
+    <!-- LOGIN -->
+
     <button
       class="primary-btn full"
       type="submit"
+      id="loginBtn"
     >
-      Continue
+      Login
     </button>
 
   </form>
+
+
+  <!-- CREATE ACCOUNT -->
+
+  <button
+    type="button"
+    id="createAccountBtn"
+    class="secondary-btn full"
+  >
+    Create New Account
+  </button>
+
+
+  <!-- MESSAGE -->
 
   <div
     id="message"
@@ -63,6 +98,9 @@
     role="status"
     aria-live="polite"
   ></div>
+
+
+  <!-- SECURITY -->
 
   <p class="security-note">
     🔒 Secure authentication powered by Supabase
