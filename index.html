@@ -8,7 +8,7 @@
 
   <meta
     name="description"
-    content="VIBRA — Connect. Create. Share your world."
+    content="VIBRA — Premium futuristic social network."
   >
 
   <link rel="stylesheet" href="style.css">
@@ -16,29 +16,20 @@
 
 <body>
 
-  <!-- =========================
-       SPLASH SCREEN
-  ========================== -->
-
+  <!-- SPLASH -->
   <div id="splash" class="splash">
     <div class="splash-logo">VIBRA</div>
-
     <div class="loader">
       <span></span>
     </div>
-
     <p>Entering the VIBRA universe...</p>
   </div>
 
 
-  <!-- =========================
-       APPLICATION
-  ========================== -->
-
+  <!-- APP -->
   <div id="app" class="app hidden">
 
     <!-- TOP BAR -->
-
     <header class="topbar">
 
       <div class="brand">
@@ -58,111 +49,269 @@
     </header>
 
 
-    <!-- =========================
-         LOGIN / SIGNUP
-    ========================== -->
+    <main class="main">
 
-    <main id="authSection" class="auth-page">
-
-      <section class="auth-card glass">
+      <!-- AUTH -->
+      <section id="authSection" class="auth-card glass">
 
         <div class="auth-heading">
 
-          <div class="mini-logo">V</div>
-
-          <p class="eyebrow">WELCOME TO</p>
+          <p class="eyebrow">YOUR ACCOUNT</p>
 
           <h1>VIBRA</h1>
 
-          <p class="subtitle">
+          <p>
             Connect. Create. Share your world.
           </p>
 
         </div>
 
 
-        <form id="loginForm">
-
-          <!-- EMAIL -->
-
-          <div class="input-group">
-
-            <label for="email">
-              Email
-            </label>
-
-            <input
-              type="email"
-              id="email"
-              name="email"
-              placeholder="Enter your email"
-              autocomplete="email"
-              required
-            >
-
-          </div>
-
-
-          <!-- PASSWORD -->
-
-          <div class="input-group">
-
-            <label for="password">
-              Password
-            </label>
-
-            <div class="password-wrapper">
-
-              <input
-                type="password"
-                id="password"
-                name="password"
-                placeholder="Enter your password"
-                minlength="6"
-                autocomplete="current-password"
-                required
-              >
-
-              <button
-                id="togglePassword"
-                class="password-toggle"
-                type="button"
-                aria-label="Show password"
-              >
-                👁️
-              </button>
-
-            </div>
-
-          </div>
-
-
-          <!-- LOGIN -->
+        <!-- AUTH TABS -->
+        <div class="auth-tabs">
 
           <button
-            id="loginBtn"
-            class="primary-btn"
-            type="submit"
-          >
-            Login
-          </button>
-
-
-          <!-- CREATE ACCOUNT -->
-
-          <button
-            id="createAccountBtn"
-            class="secondary-btn"
+            id="emailModeBtn"
+            class="auth-tab active"
             type="button"
           >
-            Create New Account
+            📧 Email
           </button>
 
-        </form>
+          <button
+            id="phoneModeBtn"
+            class="auth-tab"
+            type="button"
+          >
+            📱 Phone
+          </button>
+
+        </div>
+
+
+        <!-- EMAIL AUTH -->
+        <div id="emailAuth">
+
+          <form id="loginForm">
+
+            <label>
+              Email
+
+              <input
+                type="email"
+                id="email"
+                placeholder="Enter your email"
+                autocomplete="email"
+              >
+            </label>
+
+
+            <label class="password-label">
+
+              Password
+
+              <div class="password-wrapper">
+
+                <input
+                  type="password"
+                  id="password"
+                  placeholder="Enter your password"
+                  minlength="6"
+                  autocomplete="current-password"
+                >
+
+                <button
+                  type="button"
+                  id="togglePassword"
+                  class="password-toggle"
+                  aria-label="Show password"
+                >
+                  👁️
+                </button>
+
+              </div>
+
+            </label>
+
+
+            <button
+              type="submit"
+              class="primary-btn full"
+              id="loginBtn"
+            >
+              Login
+            </button>
+
+          </form>
+
+
+          <div class="auth-links">
+
+            <button
+              type="button"
+              id="createAccountBtn"
+              class="text-btn"
+            >
+              Create New Account
+            </button>
+
+            <button
+              type="button"
+              id="forgotPasswordBtn"
+              class="text-btn"
+            >
+              Forgot Password?
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <!-- PHONE AUTH -->
+        <div id="phoneAuth" class="hidden">
+
+          <label>
+            Phone Number
+
+            <input
+              type="tel"
+              id="phone"
+              placeholder="+91 9876543210"
+              autocomplete="tel"
+            >
+          </label>
+
+
+          <button
+            type="button"
+            id="sendOtpBtn"
+            class="primary-btn full"
+          >
+            Send OTP
+          </button>
+
+
+          <div id="otpArea" class="hidden">
+
+            <label>
+              Enter OTP
+
+              <input
+                type="text"
+                id="otp"
+                placeholder="Enter 6-digit OTP"
+                inputmode="numeric"
+                maxlength="6"
+                autocomplete="one-time-code"
+              >
+            </label>
+
+
+            <button
+              type="button"
+              id="verifyOtpBtn"
+              class="primary-btn full"
+            >
+              Verify OTP
+            </button>
+
+
+            <button
+              type="button"
+              id="resendOtpBtn"
+              class="secondary-btn full"
+            >
+              Resend OTP
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <!-- FORGOT PASSWORD -->
+        <div
+          id="forgotPasswordBox"
+          class="forgot-box hidden"
+        >
+
+          <h3>Reset Password</h3>
+
+          <p>
+            Enter your email and we'll send you a password reset link.
+          </p>
+
+          <input
+            type="email"
+            id="resetEmail"
+            placeholder="Enter your email"
+            autocomplete="email"
+          >
+
+          <button
+            type="button"
+            id="sendResetBtn"
+            class="primary-btn full"
+          >
+            Send Reset Link
+          </button>
+
+          <button
+            type="button"
+            id="backToLoginBtn"
+            class="secondary-btn full"
+          >
+            Back to Login
+          </button>
+
+        </div>
+
+
+        <!-- UPDATE PASSWORD -->
+        <div
+          id="updatePasswordBox"
+          class="forgot-box hidden"
+        >
+
+          <h3>Create New Password</h3>
+
+          <p>
+            Enter your new VIBRA password.
+          </p>
+
+          <div class="password-wrapper">
+
+            <input
+              type="password"
+              id="newPassword"
+              placeholder="New password"
+              minlength="6"
+            >
+
+            <button
+              type="button"
+              id="toggleNewPassword"
+              class="password-toggle"
+            >
+              👁️
+            </button>
+
+          </div>
+
+
+          <button
+            type="button"
+            id="updatePasswordBtn"
+            class="primary-btn full"
+          >
+            Update Password
+          </button>
+
+        </div>
 
 
         <!-- MESSAGE -->
-
         <div
           id="message"
           class="message"
@@ -177,60 +326,55 @@
 
       </section>
 
-    </main>
+
+      <!-- HOME -->
+      <section
+        id="homeSection"
+        class="home-section glass hidden"
+      >
+
+        <p class="eyebrow">WELCOME BACK</p>
+
+        <h2>
+          Hey, <span id="welcomeName">VIBRA User</span> 👋
+        </h2>
+
+        <p>
+          Your VIBRA universe is ready.
+        </p>
 
 
-    <!-- =========================
-         HOME AFTER LOGIN
-    ========================== -->
+        <button
+          id="createPostBtn"
+          class="primary-btn"
+          type="button"
+        >
+          + Create Post
+        </button>
 
-    <main id="homeSection" class="home-page hidden">
 
-      <section class="hero glass">
+        <button
+          id="logoutBtn"
+          class="secondary-btn"
+          type="button"
+        >
+          Logout
+        </button>
 
-        <div class="hero-content">
 
-          <p class="eyebrow">
-            WELCOME BACK
-          </p>
+        <!-- PROFILE -->
+        <div class="profile-mini">
 
-          <h1>
-            Hey, <span id="welcomeName">VIBRA User</span>
-          </h1>
-
-          <p class="hero-text">
-            Your VIBRA universe is ready.
-          </p>
-
-          <button
-            id="createPostBtn"
-            class="primary-btn"
-            type="button"
+          <div
+            id="profileInitial"
+            class="profile-avatar"
           >
-            + Create Post
-          </button>
+            V
+          </div>
 
-        </div>
-
-        <div class="orb orb-one"></div>
-        <div class="orb orb-two"></div>
-
-      </section>
-
-
-      <!-- PROFILE -->
-
-      <section class="profile-card glass">
-
-        <div class="profile-avatar">
-          <span id="profileInitial">V</span>
-        </div>
-
-        <div class="profile-info">
-
-          <h2 id="profileName">
+          <h3 id="profileName">
             VIBRA User
-          </h2>
+          </h3>
 
           <p id="profileUsername">
             @vibra_user
@@ -240,24 +384,24 @@
             Welcome to VIBRA.
           </p>
 
-        </div>
 
+          <div class="profile-stats">
 
-        <div class="profile-stats">
+            <div>
+              <strong id="postCount">0</strong>
+              <span>Posts</span>
+            </div>
 
-          <div>
-            <strong id="postCount">0</strong>
-            <span>Posts</span>
-          </div>
+            <div>
+              <strong id="followersCount">0</strong>
+              <span>Followers</span>
+            </div>
 
-          <div>
-            <strong id="followersCount">0</strong>
-            <span>Followers</span>
-          </div>
+            <div>
+              <strong id="followingCount">0</strong>
+              <span>Following</span>
+            </div>
 
-          <div>
-            <strong id="followingCount">0</strong>
-            <span>Following</span>
           </div>
 
         </div>
@@ -265,27 +409,12 @@
       </section>
 
 
-      <!-- LOGOUT -->
-
-      <button
-        id="logoutBtn"
-        class="logout-btn"
-        type="button"
-      >
-        Logout
-      </button>
-
-
       <!-- FEATURES -->
-
       <section class="section">
 
         <div class="section-title">
-
           <h2>Explore VIBRA</h2>
-
           <span>∞</span>
-
         </div>
 
 
@@ -294,36 +423,25 @@
           <article class="feature-card glass">
             <div class="feature-icon">✦</div>
             <h3>Feed</h3>
-            <p>
-              Discover posts from the VIBRA community.
-            </p>
+            <p>Discover posts from the VIBRA community.</p>
           </article>
-
 
           <article class="feature-card glass">
             <div class="feature-icon">▶</div>
             <h3>Reels</h3>
-            <p>
-              Watch and share short-form videos.
-            </p>
+            <p>Watch and share short videos.</p>
           </article>
-
 
           <article class="feature-card glass">
             <div class="feature-icon">◉</div>
             <h3>Stories</h3>
-            <p>
-              Share moments with your community.
-            </p>
+            <p>Share moments with your community.</p>
           </article>
-
 
           <article class="feature-card glass">
             <div class="feature-icon">⌁</div>
             <h3>Messages</h3>
-            <p>
-              Connect privately with friends.
-            </p>
+            <p>Connect privately with friends.</p>
           </article>
 
         </div>
@@ -333,10 +451,7 @@
     </main>
 
 
-    <!-- =========================
-         BOTTOM NAVIGATION
-    ========================== -->
-
+    <!-- BOTTOM NAV -->
     <nav class="bottom-nav glass">
 
       <button
@@ -363,7 +478,6 @@
         id="createBtn"
         class="create-btn"
         type="button"
-        aria-label="Create post"
       >
         +
       </button>
@@ -393,12 +507,10 @@
   </div>
 
 
-  <!-- =========================
-       SUPABASE
-  ========================== -->
-
+  <!-- SUPABASE -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+  <!-- APP JS -->
   <script src="app.js"></script>
 
 </body>
