@@ -8,7 +8,7 @@
 
   <meta
     name="description"
-    content="VIBRA — a premium futuristic social network."
+    content="VIBRA — Connect. Create. Share your world."
   >
 
   <link rel="stylesheet" href="style.css">
@@ -16,9 +16,9 @@
 
 <body>
 
-  <!-- ==============================
+  <!-- =========================
        SPLASH SCREEN
-       ============================== -->
+  ========================== -->
 
   <div id="splash" class="splash">
     <div class="splash-logo">VIBRA</div>
@@ -31,101 +31,137 @@
   </div>
 
 
-  <!-- ==============================
+  <!-- =========================
        APPLICATION
-       ============================== -->
+  ========================== -->
 
   <div id="app" class="app hidden">
 
-    <!-- ==============================
-         AUTH SCREEN
-         ============================== -->
+    <!-- TOP BAR -->
 
-    <section id="authSection" class="auth-page">
+    <header class="topbar">
 
-      <div class="auth-card glass">
+      <div class="brand">
+        <div class="brand-mark">V</div>
+        <span>VIBRA</span>
+      </div>
+
+      <button
+        id="notificationBtn"
+        class="icon-btn"
+        type="button"
+        aria-label="Notifications"
+      >
+        ♡
+      </button>
+
+    </header>
+
+
+    <!-- =========================
+         LOGIN / SIGNUP
+    ========================== -->
+
+    <main id="authSection" class="auth-page">
+
+      <section class="auth-card glass">
 
         <div class="auth-heading">
 
-          <div class="auth-logo">V</div>
+          <div class="mini-logo">V</div>
 
           <p class="eyebrow">WELCOME TO</p>
 
           <h1>VIBRA</h1>
 
-          <p>
+          <p class="subtitle">
             Connect. Create. Share your world.
           </p>
 
         </div>
 
 
-        <!-- EMAIL -->
+        <form id="loginForm">
 
-        <label>
-          Email
+          <!-- EMAIL -->
 
-          <input
-            type="email"
-            id="email"
-            placeholder="Enter your email"
-            autocomplete="email"
-            required
-          >
-        </label>
+          <div class="input-group">
 
-
-        <!-- PASSWORD -->
-
-        <label class="password-label">
-          Password
-
-          <div class="password-wrapper">
+            <label for="email">
+              Email
+            </label>
 
             <input
-              type="password"
-              id="password"
-              placeholder="Enter your password"
-              minlength="6"
-              autocomplete="current-password"
+              type="email"
+              id="email"
+              name="email"
+              placeholder="Enter your email"
+              autocomplete="email"
               required
             >
 
-            <button
-              type="button"
-              id="togglePassword"
-              class="password-toggle"
-              aria-label="Show password"
-            >
-              👁️
-            </button>
+          </div>
+
+
+          <!-- PASSWORD -->
+
+          <div class="input-group">
+
+            <label for="password">
+              Password
+            </label>
+
+            <div class="password-wrapper">
+
+              <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Enter your password"
+                minlength="6"
+                autocomplete="current-password"
+                required
+              >
+
+              <button
+                id="togglePassword"
+                class="password-toggle"
+                type="button"
+                aria-label="Show password"
+              >
+                👁️
+              </button>
+
+            </div>
 
           </div>
 
-        </label>
+
+          <!-- LOGIN -->
+
+          <button
+            id="loginBtn"
+            class="primary-btn"
+            type="submit"
+          >
+            Login
+          </button>
 
 
-        <!-- LOGIN -->
+          <!-- CREATE ACCOUNT -->
 
-        <button
-          id="loginBtn"
-          class="primary-btn full"
-          type="button"
-        >
-          Login
-        </button>
+          <button
+            id="createAccountBtn"
+            class="secondary-btn"
+            type="button"
+          >
+            Create New Account
+          </button>
+
+        </form>
 
 
-        <!-- CREATE ACCOUNT -->
-
-        <button
-          id="signupBtn"
-          class="secondary-btn full"
-          type="button"
-        >
-          Create New Account
-        </button>
-
+        <!-- MESSAGE -->
 
         <div
           id="message"
@@ -139,302 +175,227 @@
           🔒 Secure authentication powered by Supabase
         </p>
 
-      </div>
+      </section>
 
-    </section>
-
-
-    <!-- ==============================
-         HOME / AUTHENTICATED APP
-         ============================== -->
-
-    <section id="homeSection" class="home-page hidden">
-
-      <!-- TOP BAR -->
-
-      <header class="topbar">
-
-        <div class="brand">
-
-          <div class="brand-mark">
-            V
-          </div>
-
-          <span>
-            VIBRA
-          </span>
-
-        </div>
+    </main>
 
 
-        <div class="top-actions">
+    <!-- =========================
+         HOME AFTER LOGIN
+    ========================== -->
+
+    <main id="homeSection" class="home-page hidden">
+
+      <section class="hero glass">
+
+        <div class="hero-content">
+
+          <p class="eyebrow">
+            WELCOME BACK
+          </p>
+
+          <h1>
+            Hey, <span id="welcomeName">VIBRA User</span>
+          </h1>
+
+          <p class="hero-text">
+            Your VIBRA universe is ready.
+          </p>
 
           <button
-            class="icon-btn"
-            id="notificationBtn"
-            type="button"
-            aria-label="Notifications"
-          >
-            ♡
-          </button>
-
-          <button
-            class="logout-btn"
-            id="logoutBtn"
+            id="createPostBtn"
+            class="primary-btn"
             type="button"
           >
-            Logout
+            + Create Post
           </button>
 
         </div>
 
-      </header>
+        <div class="orb orb-one"></div>
+        <div class="orb orb-two"></div>
+
+      </section>
 
 
-      <!-- MAIN -->
+      <!-- PROFILE -->
 
-      <main class="main">
+      <section class="profile-card glass">
 
-        <!-- WELCOME -->
+        <div class="profile-avatar">
+          <span id="profileInitial">V</span>
+        </div>
 
-        <section class="hero glass">
+        <div class="profile-info">
+
+          <h2 id="profileName">
+            VIBRA User
+          </h2>
+
+          <p id="profileUsername">
+            @vibra_user
+          </p>
+
+          <p id="profileBio">
+            Welcome to VIBRA.
+          </p>
+
+        </div>
+
+
+        <div class="profile-stats">
 
           <div>
+            <strong id="postCount">0</strong>
+            <span>Posts</span>
+          </div>
 
-            <p class="eyebrow">
-              WELCOME BACK
+          <div>
+            <strong id="followersCount">0</strong>
+            <span>Followers</span>
+          </div>
+
+          <div>
+            <strong id="followingCount">0</strong>
+            <span>Following</span>
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- LOGOUT -->
+
+      <button
+        id="logoutBtn"
+        class="logout-btn"
+        type="button"
+      >
+        Logout
+      </button>
+
+
+      <!-- FEATURES -->
+
+      <section class="section">
+
+        <div class="section-title">
+
+          <h2>Explore VIBRA</h2>
+
+          <span>∞</span>
+
+        </div>
+
+
+        <div class="feature-grid">
+
+          <article class="feature-card glass">
+            <div class="feature-icon">✦</div>
+            <h3>Feed</h3>
+            <p>
+              Discover posts from the VIBRA community.
             </p>
+          </article>
 
-            <h1>
-              Hey, <span id="welcomeName">VIBRA User</span>
-            </h1>
 
-            <p class="hero-text">
-              Your VIBRA universe is ready.
+          <article class="feature-card glass">
+            <div class="feature-icon">▶</div>
+            <h3>Reels</h3>
+            <p>
+              Watch and share short-form videos.
             </p>
-
-            <button
-              id="createPostBtn"
-              class="primary-btn"
-              type="button"
-            >
-              + Create Post
-            </button>
-
-          </div>
-
-          <div class="orb orb-one"></div>
-          <div class="orb orb-two"></div>
-
-        </section>
+          </article>
 
 
-        <!-- PROFILE -->
-
-        <section class="profile-card glass">
-
-          <div class="profile-avatar">
-            <span id="profileInitial">V</span>
-          </div>
-
-          <div class="profile-info">
-
-            <h2 id="profileName">
-              VIBRA User
-            </h2>
-
-            <p id="profileUsername">
-              @vibra_user
+          <article class="feature-card glass">
+            <div class="feature-icon">◉</div>
+            <h3>Stories</h3>
+            <p>
+              Share moments with your community.
             </p>
+          </article>
 
-            <p id="profileBio">
-              Welcome to VIBRA.
+
+          <article class="feature-card glass">
+            <div class="feature-icon">⌁</div>
+            <h3>Messages</h3>
+            <p>
+              Connect privately with friends.
             </p>
+          </article>
 
-          </div>
+        </div>
 
+      </section>
 
-          <div class="profile-stats">
-
-            <div>
-              <strong id="postCount">0</strong>
-              <small>Posts</small>
-            </div>
-
-            <div>
-              <strong id="followersCount">0</strong>
-              <small>Followers</small>
-            </div>
-
-            <div>
-              <strong id="followingCount">0</strong>
-              <small>Following</small>
-            </div>
-
-          </div>
-
-        </section>
+    </main>
 
 
-        <!-- FEATURES -->
+    <!-- =========================
+         BOTTOM NAVIGATION
+    ========================== -->
 
-        <section class="section">
+    <nav class="bottom-nav glass">
 
-          <div class="section-title">
-
-            <h2>
-              Explore VIBRA
-            </h2>
-
-            <span>
-              ∞
-            </span>
-
-          </div>
-
-
-          <div class="feature-grid">
-
-            <article class="feature-card glass">
-
-              <div class="feature-icon">
-                ✦
-              </div>
-
-              <h3>
-                Feed
-              </h3>
-
-              <p>
-                Discover posts from the VIBRA community.
-              </p>
-
-            </article>
+      <button
+        class="nav-item active"
+        data-page="home"
+        type="button"
+      >
+        <span>⌂</span>
+        <small>Home</small>
+      </button>
 
 
-            <article class="feature-card glass">
-
-              <div class="feature-icon">
-                ▶
-              </div>
-
-              <h3>
-                Reels
-              </h3>
-
-              <p>
-                Watch and share short-form videos.
-              </p>
-
-            </article>
+      <button
+        class="nav-item"
+        data-page="explore"
+        type="button"
+      >
+        <span>⌕</span>
+        <small>Explore</small>
+      </button>
 
 
-            <article class="feature-card glass">
-
-              <div class="feature-icon">
-                ◉
-              </div>
-
-              <h3>
-                Stories
-              </h3>
-
-              <p>
-                Share moments with your community.
-              </p>
-
-            </article>
+      <button
+        id="createBtn"
+        class="create-btn"
+        type="button"
+        aria-label="Create post"
+      >
+        +
+      </button>
 
 
-            <article class="feature-card glass">
-
-              <div class="feature-icon">
-                ⌁
-              </div>
-
-              <h3>
-                Messages
-              </h3>
-
-              <p>
-                Connect privately with your friends.
-              </p>
-
-            </article>
-
-          </div>
-
-        </section>
-
-      </main>
+      <button
+        class="nav-item"
+        data-page="reels"
+        type="button"
+      >
+        <span>▶</span>
+        <small>Reels</small>
+      </button>
 
 
-      <!-- ==============================
-           BOTTOM NAVIGATION
-           ============================== -->
+      <button
+        class="nav-item"
+        data-page="profile"
+        type="button"
+      >
+        <span>◯</span>
+        <small>Profile</small>
+      </button>
 
-      <nav class="bottom-nav glass">
-
-        <button
-          class="nav-item active"
-          data-page="home"
-          type="button"
-        >
-          <span>⌂</span>
-          <small>Home</small>
-        </button>
-
-
-        <button
-          class="nav-item"
-          data-page="explore"
-          type="button"
-        >
-          <span>⌕</span>
-          <small>Explore</small>
-        </button>
-
-
-        <button
-          class="create-btn"
-          id="createBtn"
-          type="button"
-          aria-label="Create post"
-        >
-          +
-        </button>
-
-
-        <button
-          class="nav-item"
-          data-page="reels"
-          type="button"
-        >
-          <span>▶</span>
-          <small>Reels</small>
-        </button>
-
-
-        <button
-          class="nav-item"
-          data-page="profile"
-          type="button"
-        >
-          <span>◯</span>
-          <small>Profile</small>
-        </button>
-
-      </nav>
-
-    </section>
+    </nav>
 
   </div>
 
 
-  <!-- ==============================
+  <!-- =========================
        SUPABASE
-       MUST COME BEFORE app.js
-       ============================== -->
+  ========================== -->
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
