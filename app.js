@@ -1,8 +1,24 @@
+/* =========================================================
+   VIBRA — AUTHENTICATION SYSTEM
+   Login + Create Account + Logout + Password Show/Hide
+   Supabase
+   ========================================================= */
+
+
+/* =========================================================
+   SUPABASE CONFIG
+   ========================================================= */
+
 const SUPABASE_URL =
   "https://xxxqsrsjyhxqwzrimydn.supabase.co";
 
 const SUPABASE_KEY =
   "sb_publishable_X5DDa_Sj5UWNVwS3jD77yg_4g2bX3Eb";
+
+
+/* =========================================================
+   CREATE SUPABASE CLIENT
+   ========================================================= */
 
 const supabaseClient = supabase.createClient(
   SUPABASE_URL,
@@ -10,14 +26,21 @@ const supabaseClient = supabase.createClient(
 );
 
 
+/* =========================================================
+   MAIN
+   ========================================================= */
+
 document.addEventListener("DOMContentLoaded", async () => {
 
-  // ==========================================
-  // ELEMENTS
-  // ==========================================
+  /* =======================================================
+     GET ELEMENTS
+     ======================================================= */
 
-  const splash = document.getElementById("splash");
-  const app = document.getElementById("app");
+  const splash =
+    document.getElementById("splash");
+
+  const app =
+    document.getElementById("app");
 
   const authSection =
     document.getElementById("authSection");
@@ -28,12 +51,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   const loginForm =
     document.getElementById("loginForm");
 
-  const createAccountBtn =
-    document.getElementById("createAccountBtn");
-
-  const message =
-    document.getElementById("message");
-
   const emailInput =
     document.getElementById("email");
 
@@ -43,8 +60,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   const togglePassword =
     document.getElementById("togglePassword");
 
-  const logoutBtn =
-    document.getElementById("logoutBtn");
+  const message =
+    document.getElementById("message");
 
   const notificationBtn =
     document.getElementById("notificationBtn");
@@ -80,69 +97,112 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("followingCount");
 
 
-  // ==========================================
-  // INITIAL SECURITY STATE
-  // ==========================================
+  /* =======================================================
+     CREATE ACCOUNT BUTTON
+     If it doesn't exist in HTML, JavaScript creates it.
+     ======================================================= */
+
+  let createAccountBtn =
+    document.getElementById("createAccountBtn");
+
+  if (!createAccountBtn && loginForm) {
+
+    createAccountBtn =
+      document.createElement("button");
+
+    createAccountBtn.id =
+      "createAccountBtn";
+
+    createAccountBtn.type =
+      "button";
+
+    createAccountBtn.textContent =
+      "Create New Account";
+
+    createAccountBtn.className =
+      "secondary-btn";
+
+    loginForm.insertAdjacentElement(
+      "afterend",
+      createAccountBtn
+    );
+  }
+
+
+  /* =======================================================
+     LOGOUT BUTTON
+     If it doesn't exist, create one.
+     ======================================================= */
+
+  let logoutBtn =
+    document.getElementById("logoutBtn");
+
+  if (!logoutBtn) {
+
+    logoutBtn =
+      document.createElement("button");
+
+    logoutBtn.id =
+      "logoutBtn";
+
+    logoutBtn.type =
+      "button";
+
+    logoutBtn.textContent =
+      "Logout";
+
+    logoutBtn.className =
+      "secondary-btn";
+
+    logoutBtn.style.display =
+      "none";
+
+    const topbar =
+      document.querySelector(".topbar");
+
+    if (topbar) {
+      topbar.appendChild(logoutBtn);
+    } else if (app) {
+      app.prepend(logoutBtn);
+    }
+  }
+
+
+  /* =======================================================
+     AUTH MODE
+     ======================================================= */
+
+  let authMode = "login";
+
+
+  /* =======================================================
+     INITIAL STATE
+     ======================================================= */
 
   if (app) {
-    app.classList.add("hidden");
-  }
-
-  if (homeSection) {
-    homeSection.classList.add("hidden");
-  }
-
-  if (authSection) {
-    authSection.classList.add("hidden");
+    app.classList.remove("hidden");
   }
 
 
-  // ==========================================
-  // PASSWORD SHOW / HIDE
-  // ==========================================
+  /* =======================================================
+     SHOW MESSAGE
+     ======================================================= */
 
-  if (togglePassword && passwordInput) {
-
-    togglePassword.addEventListener("click", () => {
-
-      const isHidden =
-        passwordInput.type === "password";
-
-      passwordInput.type =
-        isHidden ? "text" : "password";
-
-      togglePassword.textContent =
-        isHidden ? "🙈" : "👁️";
-
-      togglePassword.setAttribute(
-        "aria-label",
-        isHidden
-          ? "Hide password"
-          : "Show password"
-      );
-
-      togglePassword.setAttribute(
-        "title",
-        isHidden
-          ? "Hide password"
-          : "Show password"
-      );
-
-    });
-
-  }
-
-
-  // ==========================================
-  // MESSAGE
-  // ==========================================
-
-  function showMessage(text) {
+  function showMessage(text, type = "normal") {
 
     if (!message) return;
 
     message.textContent = text;
+
     message.style.opacity = "1";
+
+    if (type === "error") {
+      message.style.color = "#ff6b81";
+    } else if (type === "success") {
+      message.style.color = "#00e5ff";
+    } else {
+      message.style.color = "#ffffff";
+    }
 
     clearTimeout(
       window.vibraMessageTimer
@@ -151,16 +211,69 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.vibraMessageTimer =
       setTimeout(() => {
 
-        message.style.opacity = "0";
+        if (message) {
+          message.style.opacity = "0";
+        }
 
       }, 5000);
-
   }
 
 
-  // ==========================================
-  // SPLASH
-  // ==========================================
+  /* =======================================================
+     TOAST
+     ======================================================= */
+
+  function showToast(text) {
+
+    const toast =
+      document.createElement("div");
+
+    toast.textContent =
+      text;
+
+    Object.assign(
+      toast.style,
+      {
+        position: "fixed",
+        left: "50%",
+        bottom: "95px",
+        transform: "translateX(-50%)",
+        zIndex: "99999",
+        padding: "13px 20px",
+        borderRadius: "15px",
+        background: "rgba(10,13,24,.96)",
+        border: "1px solid rgba(0,229,255,.35)",
+        color: "#ffffff",
+        fontSize: "13px",
+        fontWeight: "700",
+        backdropFilter: "blur(18px)",
+        WebkitBackdropFilter: "blur(18px)",
+        opacity: "0",
+        transition: "opacity .3s ease"
+      }
+    );
+
+    document.body.appendChild(toast);
+
+    requestAnimationFrame(() => {
+      toast.style.opacity = "1";
+    });
+
+    setTimeout(() => {
+
+      toast.style.opacity = "0";
+
+      setTimeout(() => {
+        toast.remove();
+      }, 350);
+
+    }, 2500);
+  }
+
+
+  /* =======================================================
+     HIDE SPLASH
+     ======================================================= */
 
   function hideSplash() {
 
@@ -170,16 +283,54 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     setTimeout(() => {
 
-      splash.style.display = "none";
+      splash.style.display =
+        "none";
 
-    }, 600);
-
+    }, 650);
   }
 
 
-  // ==========================================
-  // SHOW LOGIN
-  // ==========================================
+  /* =======================================================
+     PASSWORD SHOW / HIDE
+     ======================================================= */
+
+  if (
+    togglePassword &&
+    passwordInput
+  ) {
+
+    togglePassword.addEventListener(
+      "click",
+      () => {
+
+        const isHidden =
+          passwordInput.type === "password";
+
+        passwordInput.type =
+          isHidden
+            ? "text"
+            : "password";
+
+        togglePassword.textContent =
+          isHidden
+            ? "🙈"
+            : "👁️";
+
+        togglePassword.setAttribute(
+          "aria-label",
+          isHidden
+            ? "Hide password"
+            : "Show password"
+        );
+
+      }
+    );
+  }
+
+
+  /* =======================================================
+     SHOW LOGIN SCREEN
+     ======================================================= */
 
   function showLogin() {
 
@@ -198,24 +349,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     if (logoutBtn) {
-      logoutBtn.style.display = "none";
+      logoutBtn.style.display =
+        "none";
     }
-
   }
 
 
-  // ==========================================
-  // SHOW AUTHENTICATED APP
-  // ==========================================
+  /* =======================================================
+     SHOW AUTHENTICATED APP
+     ======================================================= */
 
   async function showAuthenticatedApp(session) {
 
     if (!session) {
-
       showLogin();
-
       return;
-
     }
 
     hideSplash();
@@ -233,63 +381,61 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     if (logoutBtn) {
-      logoutBtn.style.display = "block";
+      logoutBtn.style.display =
+        "block";
     }
 
-    await loadUserProfile(session.user);
-
+    await loadUserProfile(
+      session.user
+    );
   }
 
 
-  // ==========================================
-  // LOAD USER PROFILE
-  // ==========================================
+  /* =======================================================
+     LOAD USER PROFILE
+     ======================================================= */
 
   async function loadUserProfile(user) {
 
     if (!user) return;
 
-    const userId = user.id;
-
-    let profile = null;
-
-    try {
-
-      const result =
-        await supabaseClient
-          .from("users")
-          .select("*")
-          .eq("id", userId)
-          .maybeSingle();
-
-      if (result.error) {
-
-        console.error(
-          "Profile error:",
-          result.error
-        );
-
-      }
-
-      profile = result.data;
-
-    } catch (error) {
-
-      console.error(
-        "Could not load profile:",
-        error
-      );
-
-    }
-
-
-    // ========================================
-    // AUTH USER METADATA
-    // ========================================
-
     const metadata =
       user.user_metadata || {};
 
+    let profile = null;
+
+
+    /* =====================================================
+       TRY USERS TABLE
+       ===================================================== */
+
+    try {
+
+      const {
+        data,
+        error
+      } = await supabaseClient
+        .from("users")
+        .select("*")
+        .eq("id", user.id)
+        .maybeSingle();
+
+      if (!error) {
+        profile = data;
+      }
+
+    } catch (error) {
+
+      console.warn(
+        "Profile table could not be loaded:",
+        error
+      );
+    }
+
+
+    /* =====================================================
+       USER INFORMATION
+       ===================================================== */
 
     const name =
       profile?.full_name ||
@@ -334,22 +480,18 @@ document.addEventListener("DOMContentLoaded", async () => {
       );
 
 
-    // ========================================
-    // UPDATE UI
-    // ========================================
+    /* =====================================================
+       UPDATE UI
+       ===================================================== */
 
     if (welcomeName) {
-
       welcomeName.textContent =
         name;
-
     }
 
     if (profileName) {
-
       profileName.textContent =
         name;
-
     }
 
     if (profileUsername) {
@@ -358,14 +500,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         username
           ? `@${username}`
           : "@vibra_user";
-
     }
 
     if (profileBio) {
-
       profileBio.textContent =
         bio;
-
     }
 
     if (profileInitial) {
@@ -374,115 +513,84 @@ document.addEventListener("DOMContentLoaded", async () => {
         name
           .charAt(0)
           .toUpperCase();
-
     }
 
     if (postCount) {
-
       postCount.textContent =
         posts;
-
     }
 
     if (followersCount) {
-
       followersCount.textContent =
         followers;
-
     }
 
     if (followingCount) {
-
       followingCount.textContent =
         following;
-
     }
-
   }
 
 
-  // ==========================================
-  // CHECK CURRENT SESSION
-  // ==========================================
+  /* =======================================================
+     AUTH FORM MODE
+     ======================================================= */
 
-  const {
-    data: {
-      session
-    },
-    error: sessionError
-  } =
-    await supabaseClient.auth.getSession();
+  function updateAuthMode() {
 
+    if (!createAccountBtn) return;
 
-  if (sessionError) {
+    if (authMode === "login") {
 
-    console.error(
-      "Session error:",
-      sessionError
-    );
+      createAccountBtn.textContent =
+        "Create New Account";
 
+    } else {
+
+      createAccountBtn.textContent =
+        "← Back to Login";
+    }
   }
 
 
-  if (session) {
+  /* =======================================================
+     CREATE ACCOUNT BUTTON
+     ======================================================= */
 
-    await showAuthenticatedApp(
-      session
-    );
+  if (createAccountBtn) {
 
-  } else {
+    createAccountBtn.addEventListener(
+      "click",
+      () => {
 
-    showLogin();
+        if (authMode === "login") {
 
-  }
+          authMode = "signup";
 
+          showMessage(
+            "Create your new VIBRA account.",
+            "normal"
+          );
 
-  // ==========================================
-  // AUTH STATE CHANGE
-  // ==========================================
+        } else {
 
-  supabaseClient.auth.onAuthStateChange(
-    async (event, session) => {
+          authMode = "login";
 
-      if (
-        event === "SIGNED_IN" &&
-        session
-      ) {
-
-        await showAuthenticatedApp(
-          session
-        );
-
-        showMessage(
-          "🎉 Welcome to VIBRA!"
-        );
-
-      }
-
-
-      if (
-        event === "SIGNED_OUT"
-      ) {
-
-        if (app) {
-          app.classList.add("hidden");
+          showMessage(
+            "Welcome back to VIBRA.",
+            "normal"
+          );
         }
 
-        showLogin();
-
-        showMessage(
-          "You have been logged out."
-        );
-
+        updateAuthMode();
       }
+    );
+  }
 
-    }
-  );
 
-
-  // ==========================================
-  // LOGIN
-  // ==========================================
+  /* =======================================================
+     LOGIN / SIGNUP FORM
+     ======================================================= */
 
   if (loginForm) {
 
@@ -493,259 +601,225 @@ document.addEventListener("DOMContentLoaded", async () => {
         event.preventDefault();
 
 
+        /* ================================================
+           GET VALUES
+           ================================================ */
+
         const email =
-          emailInput?.value.trim() || "";
+          emailInput?.value
+            .trim()
+            .toLowerCase() || "";
 
 
         const password =
           passwordInput?.value || "";
 
 
-        if (!email || !password) {
-
-          showMessage(
-            "Please enter your email and password."
-          );
-
-          return;
-
-        }
-
-
-        if (password.length < 6) {
-
-          showMessage(
-            "Password must contain at least 6 characters."
-          );
-
-          return;
-
-        }
-
-
-        const loginButton =
-          loginForm.querySelector(
-            "button[type='submit']"
-          );
-
-
-        if (loginButton) {
-
-          loginButton.disabled = true;
-
-          loginButton.textContent =
-            "Logging in...";
-
-        }
-
-
-        try {
-
-          const {
-            data,
-            error
-          } =
-            await supabaseClient.auth
-              .signInWithPassword({
-                email,
-                password
-              });
-
-
-          if (error) {
-
-            throw error;
-
-          }
-
-
-          if (data.session) {
-
-            await showAuthenticatedApp(
-              data.session
-            );
-
-            showMessage(
-              "🎉 Login successful!"
-            );
-
-          }
-
-        } catch (error) {
-
-          console.error(
-            "Login error:",
-            error
-          );
-
-          showMessage(
-            friendlyError(
-              error?.message
-            )
-          );
-
-        } finally {
-
-          if (loginButton) {
-
-            loginButton.disabled =
-              false;
-
-            loginButton.textContent =
-              "Login";
-
-          }
-
-        }
-
-      }
-    );
-
-  }
-
-
-  // ==========================================
-  // CREATE NEW ACCOUNT
-  // ==========================================
-
-  if (createAccountBtn) {
-
-    createAccountBtn.addEventListener(
-      "click",
-      async () => {
-
-        const email =
-          emailInput?.value.trim() || "";
-
-
-        const password =
-          passwordInput?.value || "";
-
+        /* ================================================
+           VALIDATION
+           ================================================ */
 
         if (!email) {
 
           showMessage(
-            "Please enter your email first."
+            "Please enter your email.",
+            "error"
           );
 
-          emailInput?.focus();
-
           return;
-
         }
 
 
         if (!password) {
 
           showMessage(
-            "Please enter a password."
+            "Please enter your password.",
+            "error"
           );
 
-          passwordInput?.focus();
-
           return;
-
         }
 
 
         if (password.length < 6) {
 
           showMessage(
-            "Password must contain at least 6 characters."
+            "Password must contain at least 6 characters.",
+            "error"
           );
 
           return;
-
         }
 
 
-        createAccountBtn.disabled =
-          true;
+        /* ================================================
+           BUTTON
+           ================================================ */
 
-        createAccountBtn.textContent =
-          "Creating account...";
+        const submitButton =
+          loginForm.querySelector(
+            "button[type='submit']"
+          );
+
+
+        if (submitButton) {
+
+          submitButton.disabled =
+            true;
+
+          submitButton.dataset.oldText =
+            submitButton.textContent;
+
+          submitButton.textContent =
+            authMode === "login"
+              ? "Logging in..."
+              : "Creating account...";
+        }
 
 
         try {
 
-          const {
-            data,
-            error
-          } =
-            await supabaseClient.auth
-              .signUp({
-                email,
-                password
-              });
+
+          /* ==============================================
+             LOGIN
+             ============================================== */
+
+          if (authMode === "login") {
+
+            const {
+              data,
+              error
+            } =
+              await supabaseClient.auth
+                .signInWithPassword({
+                  email,
+                  password
+                });
 
 
-          if (error) {
+            if (error) {
+              throw error;
+            }
 
-            throw error;
+
+            if (data?.session) {
+
+              await showAuthenticatedApp(
+                data.session
+              );
+
+              showToast(
+                "🎉 Welcome back to VIBRA!"
+              );
+
+              showMessage(
+                "Login successful!",
+                "success"
+              );
+            }
 
           }
 
 
-          // ==================================
-          // EMAIL CONFIRMATION OFF
-          // ==================================
-
-          if (data.session) {
-
-            await showAuthenticatedApp(
-              data.session
-            );
-
-            showMessage(
-              "🎉 Your VIBRA account has been created!"
-            );
-
-          }
-
-          // ==================================
-          // EMAIL CONFIRMATION ON
-          // ==================================
+          /* ==============================================
+             SIGN UP
+             ============================================== */
 
           else {
 
-            showMessage(
-              "📧 Account created! Please check your email and verify your account."
-            );
+            const {
+              data,
+              error
+            } =
+              await supabaseClient.auth
+                .signUp({
+                  email,
+                  password
+                });
 
+
+            if (error) {
+              throw error;
+            }
+
+
+            /* ==========================================
+               EMAIL CONFIRMATION ON
+               ========================================== */
+
+            if (!data.session) {
+
+              showMessage(
+                "📧 Account created! Check your email and verify your account before logging in.",
+                "success"
+              );
+
+              authMode =
+                "login";
+
+              updateAuthMode();
+
+            }
+
+
+            /* ==========================================
+               EMAIL CONFIRMATION OFF
+               ========================================== */
+
+            else {
+
+              await showAuthenticatedApp(
+                data.session
+              );
+
+              showToast(
+                "🎉 VIBRA account created!"
+              );
+
+              showMessage(
+                "Account created successfully!",
+                "success"
+              );
+            }
           }
+
 
         } catch (error) {
 
           console.error(
-            "Signup error:",
+            "VIBRA Auth Error:",
             error
           );
+
 
           showMessage(
             friendlyError(
               error?.message
-            )
+            ),
+            "error"
           );
+
 
         } finally {
 
-          createAccountBtn.disabled =
-            false;
+          if (submitButton) {
 
-          createAccountBtn.textContent =
-            "Create New Account";
+            submitButton.disabled =
+              false;
 
+            submitButton.textContent =
+              submitButton.dataset.oldText ||
+              "Continue";
+          }
         }
-
       }
     );
-
   }
 
 
-  // ==========================================
-  // LOGOUT
-  // ==========================================
+  /* =======================================================
+     LOGOUT
+     ======================================================= */
 
   if (logoutBtn) {
 
@@ -760,82 +834,171 @@ document.addEventListener("DOMContentLoaded", async () => {
           "Logging out...";
 
 
-        const {
-          error
-        } =
-          await supabaseClient.auth
-            .signOut();
+        try {
+
+          const {
+            error
+          } =
+            await supabaseClient.auth
+              .signOut();
 
 
-        if (error) {
+          if (error) {
+            throw error;
+          }
+
+
+          showLogin();
+
+          showMessage(
+            "You have been logged out.",
+            "success"
+          );
+
+          showToast(
+            "👋 Logged out successfully."
+          );
+
+
+        } catch (error) {
 
           console.error(
-            "Logout error:",
+            "Logout Error:",
             error
           );
 
           showMessage(
-            "Could not logout. Please try again."
+            "Could not logout. Please try again.",
+            "error"
           );
+
+        } finally {
 
           logoutBtn.disabled =
             false;
 
           logoutBtn.textContent =
             "Logout";
-
-          return;
-
         }
-
-
-        logoutBtn.disabled =
-          false;
-
-        logoutBtn.textContent =
-          "Logout";
-
       }
     );
-
   }
 
 
-  // ==========================================
-  // REQUIRE LOGIN
-  // ==========================================
+  /* =======================================================
+     CHECK EXISTING SESSION
+     ======================================================= */
 
-  async function requireLogin() {
+  try {
 
     const {
-      data: {
-        session
-      }
+      data,
+      error
     } =
       await supabaseClient.auth
         .getSession();
 
 
-    if (!session) {
+    if (error) {
+      throw error;
+    }
+
+
+    if (data?.session) {
+
+      await showAuthenticatedApp(
+        data.session
+      );
+
+    } else {
+
+      showLogin();
+    }
+
+
+  } catch (error) {
+
+    console.error(
+      "Session Error:",
+      error
+    );
+
+    showLogin();
+
+    showMessage(
+      "Could not check your login session.",
+      "error"
+    );
+  }
+
+
+  /* =======================================================
+     AUTH STATE CHANGE
+     ======================================================= */
+
+  supabaseClient.auth.onAuthStateChange(
+    async (event, session) => {
+
+      console.log(
+        "VIBRA Auth Event:",
+        event
+      );
+
+
+      if (
+        event === "SIGNED_IN" &&
+        session
+      ) {
+
+        await showAuthenticatedApp(
+          session
+        );
+      }
+
+
+      if (
+        event === "SIGNED_OUT"
+      ) {
+
+        showLogin();
+      }
+    }
+  );
+
+
+  /* =======================================================
+     REQUIRE LOGIN
+     ======================================================= */
+
+  async function requireLogin() {
+
+    const {
+      data
+    } =
+      await supabaseClient.auth
+        .getSession();
+
+
+    if (!data?.session) {
 
       showLogin();
 
       showMessage(
-        "🔐 Please login first."
+        "🔐 Please login first.",
+        "error"
       );
 
       return false;
-
     }
 
-    return true;
 
+    return true;
   }
 
 
-  // ==========================================
-  // CREATE BUTTON
-  // ==========================================
+  /* =======================================================
+     CREATE POST
+     ======================================================= */
 
   if (createBtn) {
 
@@ -844,7 +1007,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       async () => {
 
         if (
-          !await requireLogin()
+          !(await requireLogin())
         ) {
           return;
         }
@@ -852,16 +1015,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         showToast(
           "✨ Post creator is coming next."
         );
-
       }
     );
-
   }
 
-
-  // ==========================================
-  // CREATE POST BUTTON
-  // ==========================================
 
   if (createPostBtn) {
 
@@ -870,7 +1027,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       async () => {
 
         if (
-          !await requireLogin()
+          !(await requireLogin())
         ) {
           return;
         }
@@ -878,16 +1035,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         showToast(
           "✨ Post creator is coming next."
         );
-
       }
     );
-
   }
 
 
-  // ==========================================
-  // NOTIFICATIONS
-  // ==========================================
+  /* =======================================================
+     NOTIFICATIONS
+     ======================================================= */
 
   if (notificationBtn) {
 
@@ -896,24 +1051,22 @@ document.addEventListener("DOMContentLoaded", async () => {
       async () => {
 
         if (
-          !await requireLogin()
+          !(await requireLogin())
         ) {
           return;
         }
 
         showToast(
-          "🔔 Notifications will appear here."
+          "🔔 Notifications are coming next."
         );
-
       }
     );
-
   }
 
 
-  // ==========================================
-  // NAVIGATION
-  // ==========================================
+  /* =======================================================
+     NAVIGATION
+     ======================================================= */
 
   const navItems =
     document.querySelectorAll(
@@ -921,81 +1074,90 @@ document.addEventListener("DOMContentLoaded", async () => {
     );
 
 
-  navItems.forEach((item) => {
+  navItems.forEach(
+    (item) => {
 
-    item.addEventListener(
-      "click",
-      async () => {
+      item.addEventListener(
+        "click",
+        async () => {
 
-        if (
-          !await requireLogin()
-        ) {
-          return;
-        }
-
-
-        navItems.forEach(
-          (nav) => {
-
-            nav.classList.remove(
-              "active"
-            );
-
+          if (
+            !(await requireLogin())
+          ) {
+            return;
           }
-        );
 
 
-        item.classList.add(
-          "active"
-        );
-
-
-        const page =
-          item.dataset.page;
-
-
-        if (page === "explore") {
-
-          showToast(
-            "🔎 Explore is coming next."
+          navItems.forEach(
+            (nav) => {
+              nav.classList.remove(
+                "active"
+              );
+            }
           );
 
-        }
 
-
-        if (page === "reels") {
-
-          showToast(
-            "▶ Reels is coming next."
+          item.classList.add(
+            "active"
           );
 
+
+          const page =
+            item.dataset.page;
+
+
+          if (page === "explore") {
+
+            showToast(
+              "🔎 Explore is coming next."
+            );
+          }
+
+
+          if (page === "reels") {
+
+            showToast(
+              "▶ Reels is coming next."
+            );
+          }
+
+
+          if (page === "profile") {
+
+            showToast(
+              "◯ Profile is coming next."
+            );
+          }
         }
+      );
+    }
+  );
 
 
-        if (page === "profile") {
-
-          showToast(
-            "◯ Profile is coming next."
-          );
-
-        }
-
-      }
-    );
-
-  });
-
-
-  // ==========================================
-  // FRIENDLY ERRORS
-  // ==========================================
+  /* =======================================================
+     FRIENDLY ERROR
+     ======================================================= */
 
   function friendlyError(error) {
 
     const text =
-      String(
-        error || ""
-      ).toLowerCase();
+      String(error || "")
+        .toLowerCase();
+
+
+    if (
+      text.includes(
+        "invalid login credentials"
+      ) ||
+      text.includes(
+        "invalid credentials"
+      )
+    ) {
+
+      return (
+        "❌ Email or password is incorrect."
+      );
+    }
 
 
     if (
@@ -1004,44 +1166,36 @@ document.addEventListener("DOMContentLoaded", async () => {
       )
     ) {
 
-      return "📧 Please verify your email first.";
-
+      return (
+        "📧 Please verify your email first."
+      );
     }
 
 
     if (
+      text.includes(
+        "user already registered"
+      ) ||
       text.includes(
         "already registered"
       )
     ) {
 
-      return "This email is already registered. Please login.";
-
+      return (
+        "⚠️ This email is already registered. Please login."
+      );
     }
 
 
     if (
       text.includes(
-        "invalid login"
-      ) ||
-      text.includes(
-        "invalid credentials"
+        "password should be at least"
       )
     ) {
 
-      return "❌ Email or password is incorrect.";
-
-    }
-
-
-    if (
-      text.includes(
-        "password"
-      )
-    ) {
-
-      return "Please check your password.";
-
+      return (
+        "🔐 Password must contain at least 6 characters."
+      );
     }
 
 
@@ -1051,127 +1205,49 @@ document.addEventListener("DOMContentLoaded", async () => {
       )
     ) {
 
-      return "Too many attempts. Please wait and try again.";
-
+      return (
+        "⏳ Too many attempts. Please wait a little and try again."
+      );
     }
 
 
     if (
       text.includes(
         "network"
+      ) ||
+      text.includes(
+        "fetch"
       )
-    )
-    {
+    ) {
 
-      return "🌐 Network error. Check your internet connection.";
-
+      return (
+        "🌐 Network error. Check your internet connection."
+      );
     }
 
 
-    return "Something went wrong. Please try again.";
+    if (
+      text.includes(
+        "failed to fetch"
+      )
+    ) {
 
-  }
-
-
-  // ==========================================
-  // TOAST
-  // ==========================================
-
-  function showToast(text) {
-
-    const toast =
-      document.createElement(
-        "div"
+      return (
+        "🌐 Could not connect to Supabase. Check the Supabase URL and internet connection."
       );
+    }
 
 
-    toast.textContent =
-      text;
-
-
-    Object.assign(
-      toast.style,
-      {
-
-        position: "fixed",
-
-        left: "50%",
-
-        bottom: "95px",
-
-        transform:
-          "translateX(-50%)",
-
-        zIndex: "99999",
-
-        padding:
-          "13px 20px",
-
-        borderRadius:
-          "15px",
-
-        background:
-          "rgba(12,15,25,0.96)",
-
-        border:
-          "1px solid rgba(0,240,255,0.3)",
-
-        color:
-          "#ffffff",
-
-        fontSize:
-          "13px",
-
-        fontWeight:
-          "600",
-
-        backdropFilter:
-          "blur(18px)",
-
-        opacity: "0",
-
-        transition:
-          "all .3s ease"
-
-      }
+    return (
+      "❌ Something went wrong. Please try again."
     );
-
-
-    document.body.appendChild(
-      toast
-    );
-
-
-    requestAnimationFrame(
-      () => {
-
-        toast.style.opacity =
-          "1";
-
-      }
-    );
-
-
-    setTimeout(
-      () => {
-
-        toast.style.opacity =
-          "0";
-
-
-        setTimeout(
-          () => {
-
-            toast.remove();
-
-          },
-          350
-        );
-
-      },
-      2500
-    );
-
   }
+
+
+  /* =======================================================
+     FINAL
+     ======================================================= */
+
+  updateAuthMode();
 
 });
